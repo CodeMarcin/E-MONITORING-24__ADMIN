@@ -1,0 +1,29 @@
+@import "./vars.css";
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--fontBasic);
+  color: var(--colorOne);
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  font-family: var(--fontBasic);
+}
+:-moz-placeholder {
+  font-style: italic;
+  font-family: var(--fontBasic);
+}
+::-moz-placeholder {
+  font-style: italic;
+  font-family: var(--fontBasic);
+}
+:-ms-input-placeholder {
+  font-style: italic;
+  font-family: var(--fontBasic);
+}

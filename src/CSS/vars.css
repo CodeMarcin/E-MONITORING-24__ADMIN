@@ -1,0 +1,22 @@
+@font-face {
+  font-family: "EnergyRegular";
+  src: url("../Assets/Fonts/Energy-Regular.otf");
+}
+
+@font-face {
+  font-family: "EnergyBold";
+  src: url("../Assets/Fonts/Energy-Bold.otf");
+}
+
+:root {
+  /* FONTS */
+  --fontBasic: "EnergyRegular";
+  --fontBold: "EnergyBold";
+
+  /* COLORS  */
+  --colorOne: #231f20;
+  --colorTwo: #7a7a7a;
+  --colorThree: #ec1f26;
+
+  --colorWhite: #fff;
+}
