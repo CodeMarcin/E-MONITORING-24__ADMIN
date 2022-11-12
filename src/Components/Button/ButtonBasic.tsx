@@ -1,11 +1,11 @@
-import { IButtonStyles } from "./ButtonInterface";
-import styles from "./Button.module.css";
+import { ISpecifyButton } from "./ButtonInterface";
 
 export interface Props {
-  props: IButtonStyles;
+  props: ISpecifyButton;
 }
 
 export const ButtonBasic: React.FC<Props> = ({ props }: Props) => {
-    const {className, value} = props;
-  return <input type="button" className={className} value={value} />;
+  const { className, value, callbacks } = props;
+  const { onClickCallback } = callbacks ?? {};
+  return <input type="button" className={className} value={value} onClick={onClickCallback}/>;
 };

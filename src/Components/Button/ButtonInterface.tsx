@@ -1,10 +1,16 @@
 export interface IButtonProps {
   type: "BASIC" | "SECOND";
   width: "FULL" | "FLEX";
-  value: string,
+  value: string;
+  callbacks: {
+    onClickCallback: () => void;
+  };
 }
 
-export interface IButtonStyles {
+export interface ISpecifyButton {
   className: string;
   value: string;
+  callbacks: {
+    onClickCallback: () => void;
+  };
 }

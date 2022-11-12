@@ -1,5 +1,7 @@
-import { IInputTextNumberPasswordProps, IInputTextArea } from "./InputInterface";
 import { InputTextNumberPassword } from "./InputTextNumberPassword";
+
+import { IInputTextNumberPasswordProps, IInputTextArea } from "./InputInterface";
+
 import styles from "./Input.module.css";
 
 interface Props {
@@ -7,7 +9,13 @@ interface Props {
 }
 
 export const Input: React.FC<Props> = ({ props }: Props) => {
-  const { type } = props;
+  const { type, canGotErrors } = props;
 
-  return <label className={styles["label"]}>{(type === "text" || type === "number" || type === "password") && <InputTextNumberPassword props={props} />}</label>;
+
+  return (
+    <label className={styles["label"]}>
+      {(type === "text" || type === "number" || type === "password") && <InputTextNumberPassword props={props} />}
+      {canGotErrors && <p className={styles["input-error"]}>ss</p>}
+    </label>
+  );
 };

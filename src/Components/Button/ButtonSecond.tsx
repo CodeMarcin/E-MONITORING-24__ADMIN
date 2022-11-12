@@ -1,8 +1,8 @@
-import { IButtonProps } from "./ButtonInterface";
-import styles from "./Button.module.css";
+import { ISpecifyButton } from "./ButtonInterface";
+
 
 export interface Props {
-  props: IButtonProps;
+  props: ISpecifyButton;
 }
 
 export const ButtonSecond: React.FC<Props> = ({ props }: Props) => {

@@ -6,7 +6,8 @@ export interface Props {
 }
 
 export const InputTextNumberPassword: React.FC<Props> = ({ props }: Props) => {
-  const { type, label, maxLength, minLength } = props;
+  const { type, label, name, maxLength, minLength, callbacks } = props;
+  const { onChangeCallback } = callbacks ?? {};
 
-  return <input className={styles["inputTextNumberPassword"]} maxLength={maxLength} minLength={minLength} type={type} placeholder={label} />;
+  return <input className={styles["inputTextNumberPassword"]} maxLength={maxLength} minLength={minLength} type={type} placeholder={label} data-index={name} onChange={onChangeCallback} />;
 };
