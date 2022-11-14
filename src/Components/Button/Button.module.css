@@ -1,0 +1,28 @@
+.button {
+  font-family: var(--fontBold);
+  font-size: 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.button--basic {
+  background-color: var(--colorThree);
+  color: var(--colorWhite);
+}
+
+.button--basic:hover {
+  background-color: var(--colorFour);
+}
+
+.button--second {
+  background: none;
+  border: 2px solid var(--colorOne);
+  color: var(--colorOne);
+}
+
+.button--full-width {
+  padding: 10px 0;
+  width: 100%;
+}

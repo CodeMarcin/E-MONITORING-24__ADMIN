@@ -1,0 +1,28 @@
+.label {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  width: 100%;
+}
+
+.inputTextNumberPassword {
+  border: none;
+  border-bottom: 2px solid var(--colorTwo);
+  width: 100%;
+  padding: 10px 25px;
+  outline: none;
+  font-family: var(--fontBold);
+  color: var(--colorOne);
+}
+
+.input-error {
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  align-items: flex-end;
+}
+
+.input-error__text {
+  color: var(--colorThree);
+  font-size: 14px;
+}
