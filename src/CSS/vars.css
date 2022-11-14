@@ -19,4 +19,11 @@
   --colorThree: #ec1f26;
   --colorFour: #C91FF0;
   --colorWhite: #fff;
+
+  /* WIDTH */
+  --widthSM: 540px;
+  --widthMD: 720px;
+  --widthLG: 960px;
+  --widthXL: 1140px;
+  --widthXXL: 1320px;
 }

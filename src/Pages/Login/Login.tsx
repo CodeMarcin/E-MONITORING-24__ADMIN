@@ -19,7 +19,7 @@ import { useValidateInputy } from "../../Hooks/useValidateInput";
 
 import { SVGTopLoginIcon } from "../../Utilities/SVG";
 
-import { LOGIN_LABELS } from "./LoginLabels";
+import { LOGIN_LABELS } from "./Login.labels";
 
 import styles from "./Login.module.css";
 
