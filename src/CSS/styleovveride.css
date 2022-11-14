@@ -27,3 +27,15 @@ body {
   font-style: italic;
   font-family: var(--fontBasic);
 }
+
+.backgroundGradientOne {
+  transition: all 0.3s ease-in-out;
+}
+
+.backgroundGradientOne:hover {
+  background: rgb(236, 31, 38);
+  background: -moz-linear-gradient(90deg, rgba(236, 31, 38, 1) 0%, rgba(201, 31, 240, 1) 100%);
+  background: -webkit-linear-gradient(90deg, rgba(236, 31, 38, 1) 0%, rgba(201, 31, 240, 1) 100%);
+  background: linear-gradient(90deg, rgba(236, 31, 38, 1) 0%, rgba(201, 31, 240, 1) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#ec1f26",endColorstr="#c91ff0",GradientType=1);
+}

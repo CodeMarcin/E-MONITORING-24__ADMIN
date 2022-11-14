@@ -1,21 +1,22 @@
 import { InputTextNumberPassword } from "./InputTextNumberPassword";
 
-import { IInputTextNumberPasswordProps, IInputTextArea } from "./InputInterface";
+import { TInputSubCategory } from "./Typescript/Input.type";
 
 import styles from "./Input.module.css";
 
-interface Props {
-  props: IInputTextNumberPasswordProps | IInputTextArea;
-}
-
-export const Input: React.FC<Props> = ({ props }: Props) => {
-  const { type, canGotErrors } = props;
-
+export const Input = ({ props }: TInputSubCategory) => {
+  const { type, errorList } = props;
 
   return (
     <label className={styles["label"]}>
-      {(type === "text" || type === "number" || type === "password") && <InputTextNumberPassword props={props} />}
-      {canGotErrors && <p className={styles["input-error"]}>ss</p>}
+      {type !== "textarea" && <InputTextNumberPassword props={props} />}
+      {errorList && (
+        <div className={styles["input-error"]}>
+          {errorList.map((el) => (
+            <p className={styles['input-error__text']}>{el}</p>
+          ))}
+        </div>
+      )}
     </label>
   );
 };

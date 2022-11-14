@@ -1,13 +1,21 @@
-import { IInputTextNumberPasswordProps } from "./InputInterface";
+import { IInputTextNumberPasswordProps } from "./Typescript/Input.interface";
+
 import styles from "./Input.module.css";
 
-export interface Props {
-  props: IInputTextNumberPasswordProps;
-}
+export const InputTextNumberPassword = ({ props }: IInputTextNumberPasswordProps) => {
+  const { type, label, name, maxLength, minLength, callbacks, value } = props;
+  const { onChangeCallback } = callbacks;
 
-export const InputTextNumberPassword: React.FC<Props> = ({ props }: Props) => {
-  const { type, label, name, maxLength, minLength, callbacks } = props;
-  const { onChangeCallback } = callbacks ?? {};
-
-  return <input className={styles["inputTextNumberPassword"]} maxLength={maxLength} minLength={minLength} type={type} placeholder={label} data-index={name} onChange={onChangeCallback} />;
+  return (
+    <input
+      className={styles["inputTextNumberPassword"]}
+      maxLength={maxLength}
+      minLength={minLength}
+      type={type}
+      placeholder={label}
+      name={name}
+      value={value}
+      onChange={onChangeCallback}
+    />
+  );
 };

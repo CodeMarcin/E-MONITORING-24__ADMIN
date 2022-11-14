@@ -15,15 +15,14 @@
   color: var(--colorOne);
 }
 
-.inputTextNumberPassword::placeholder,
-.inputTextNumberPassword:-ms-input-placeholder,
-.inputTextNumberPassword::-ms-input-placeholder {
-  font-size: 16px;
-  font-style: italic;
-  opacity: 1;
-}
-
 .input-error {
   display: flex;
-  justify-content: flex-end;
+  flex-direction: column;
+  row-gap: 5px;
+  align-items: flex-end;
+}
+
+.input-error__text {
+  color: var(--colorThree);
+  font-size: 14px;
 }
