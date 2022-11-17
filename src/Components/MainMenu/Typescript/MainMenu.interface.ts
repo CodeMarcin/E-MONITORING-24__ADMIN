@@ -1,14 +1,9 @@
-import { EMainMenuItems } from "./MainMenu.enum";
-
 export interface IMainMenuItems {
-  props: {
-    name: string;
-    label: string;
-    link?: string;
-    active?: boolean;
-    subItems?: IMainMenuSubItems[];
-    callback?: ((e: React.SyntheticEvent<HTMLLIElement, MouseEvent>) => void) | (() => void);
-  };
+  name: string;
+  label: string;
+  link?: string;
+  active?: boolean;
+  subItems?: IMainMenuSubItems[];
 }
 
 export interface IMainMenuSubItems {

@@ -1,14 +1,21 @@
+import { Link } from "react-router-dom";
+
 import { IMainMenuItems } from "./Typescript/MainMenu.interface";
 
 import { useStyles } from "../../Hooks/useStyles";
 
 import styles from "./MainMenu.module.css";
 
-export const MainMenuItem = ({ props }: IMainMenuItems) => {
-  const { label, name, link, callback } = props;
-  const topMenuStyle = useStyles(styles["main-menu__link"], styles["main-menu__link--bold"]);
+type TCallback = (e: React.SyntheticEvent<HTMLLIElement, MouseEvent>) => void;
 
-  if (!props.link)
+export const MainMenuItem = (props: { items: IMainMenuItems; callback?: TCallback; clearCallback?: TCallback }) => {
+  const { items, callback } = props;
+  const { active, link, subItems, name, label } = items;
+
+  let topMenuStyle = useStyles(styles["main-menu__link"], styles["main-menu__link--bold"]);
+  if (active) topMenuStyle += ` ${styles["main-menu__link--active"]}`;
+
+  if (!link && subItems)
     return (
       <li className={topMenuStyle} data-name={name} onMouseEnter={callback}>
         {label}
@@ -17,7 +24,7 @@ export const MainMenuItem = ({ props }: IMainMenuItems) => {
   else
     return (
       <li className={styles["main-menu__link"]} onMouseEnter={callback}>
-        <a href={link}>{label}</a>
+        {link && <Link to={link}>{label}</Link>}
       </li>
     );
 };

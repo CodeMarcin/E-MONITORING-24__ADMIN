@@ -1,124 +1,92 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 import { MainMenuItem } from "./MainMenuItem";
+import { MainMenuItemMobile } from "./MainMenuItemMobile";
 
 import { IMainMenuItems, IMainMenuSubItems } from "./Typescript/MainMenu.interface";
 
-import { MAIN_MENU_LABELS } from "./MainMenu.labels";
+import { SVGMobileMenuCloseIcon, SVGMobileMenuOpenIcon } from "../../Utilities/SVG";
+
+import { MENU_ITEMS } from "./Objects";
 import styles from "./MainMenu.module.css";
 
 export const MainMenu = () => {
+  const [mainMenuItems, setMainMenuItems] = useState<IMainMenuItems[]>(MENU_ITEMS);
   const [subMenuItems, setSubMenuItems] = useState<IMainMenuSubItems[]>([]);
+  const [mobileMenuActive, setMobileMenuActive] = useState<boolean>(false);
 
-  const toggleSubMenu = (e: React.SyntheticEvent<HTMLLIElement, MouseEvent>) => {
+  const mobileMenuContentRef = useRef<HTMLDivElement>(null);
+
+  const setActiveMenuItem = (e: React.SyntheticEvent<HTMLLIElement, MouseEvent>) => {
+    setMainMenuItems((prevState) => {
+      prevState.forEach((el) => {
+        if (el.name === (e.target as HTMLLIElement).dataset.name) el.active = true;
+        else el.active = false;
+      });
+      return [...prevState];
+    });
+
     setSubMenuItems((prevState) => {
       prevState = [];
-      const subMenu = MENU_ITEMS.find((el) => el.props.name === (e.target as HTMLLIElement).dataset.name);
-      if (subMenu?.props.subItems) prevState = [...subMenu.props.subItems];
-      return prevState;
+      const subMenu = mainMenuItems.find((el) => el.active);
+      if (subMenu?.subItems) prevState = [...subMenu.subItems];
+      return [...prevState];
     });
   };
 
-  const clearSubMenu = () => {
-    setSubMenuItems((prevState) => {
-      prevState = [];
-      return prevState;
+  const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent>) => {
+    e.stopPropagation();
+    const eventTarget = e.target as HTMLDivElement;
+    const parentElement = eventTarget.parentElement as HTMLDivElement;
+    setMainMenuItems((prevState) => {
+      const itemToChange = prevState.find((el) => el.name === eventTarget.dataset.name || el.name === parentElement?.dataset.name);
+      if (itemToChange) itemToChange.active = !itemToChange.active;
+      return [...prevState];
     });
   };
 
-  const MENU_ITEMS: IMainMenuItems[] = [
-    {
-      props: {
-        name: "contractors",
-        label: MAIN_MENU_LABELS.CONTRACTORS,
-        active: false,
-        callback: toggleSubMenu,
-        subItems: [
-          {
-            name: "contractorsAll",
-            label: MAIN_MENU_LABELS.CONTRACTORS_ALL,
-            link: "",
-          },
-          {
-            name: "contractorsAdd",
-            label: MAIN_MENU_LABELS.CONTRACTORS_ADD,
-            link: "",
-          },
-        ],
-      },
-    },
-    {
-      props: {
-        name: "invoices",
-        label: MAIN_MENU_LABELS.INVOICES,
-        active: false,
-        callback: toggleSubMenu,
-        subItems: [
-          {
-            name: "invoicesAll",
-            label: MAIN_MENU_LABELS.INVOICES_ALL,
-            link: "",
-          },
-          {
-            name: "invoicesAdd",
-            label: MAIN_MENU_LABELS.INVOICES_ADD,
-            link: "",
-          },
-        ],
-      },
-    },
-    {
-      props: {
-        name: "offers",
-        label: MAIN_MENU_LABELS.OFFERS,
-        active: false,
-        callback: toggleSubMenu,
-        subItems: [
-          {
-            name: "offersAll",
-            label: MAIN_MENU_LABELS.OFFERS_ALL,
-            link: "",
-          },
-          {
-            name: "offersAdd",
-            label: MAIN_MENU_LABELS.OFFERS_ADD,
-            link: "",
-          },
-        ],
-      },
-    },
-    {
-      props: {
-        name: "settings",
-        label: MAIN_MENU_LABELS.SETTINGS,
-        link: "http://wp.pl",
-        callback: clearSubMenu,
-      },
-    },
-    {
-      props: {
-        name: "logout",
-        label: MAIN_MENU_LABELS.LOGOUT,
-        link: "http://wp.pl",
-        callback: clearSubMenu,
-      },
-    },
-  ];
+  const toggleMobileMenu = () => {
+    setMobileMenuActive((prevState) => !prevState);
+    if (mobileMenuContentRef.current) mobileMenuContentRef.current.classList.toggle(styles["mobile-menu--active"]);
+  };
+
+  const clearActiveMenu = () => {
+    setMainMenuItems((prevState) => {
+      prevState.forEach((el) => (el.active = false));
+      return [...prevState];
+    });
+    setSubMenuItems((prevState) => {
+      prevState = [];
+      return [...prevState];
+    });
+  };
 
   return (
-    <div className={styles["main-menu"]}>
-      <div className={styles["main-menu__container"]} onMouseLeave={clearSubMenu}>
-        <ul className={styles["main-menu__container-section"]}>
-          {MENU_ITEMS.map((el) => (
-            <MainMenuItem props={el.props} />
+    <>
+      <div className={styles["main-menu"]} onMouseLeave={clearActiveMenu}>
+        <ul className={styles["main-menu__section"]}>
+          {mainMenuItems.map((el) => (
+            <MainMenuItem items={el} callback={setActiveMenuItem} clearCallback={clearActiveMenu} key={el.name} />
           ))}
         </ul>
-        <ul className={styles["main-menu__container-section"]}>
+        <ul className={styles["main-menu__section"]}>
           {subMenuItems.map((el) => (
-            <MainMenuItem props={el} />
+            <MainMenuItem items={el} key={el.name} />
           ))}
         </ul>
       </div>
-    </div>
+
+      <div className={styles["main-menu--mobile"]} onClick={toggleMobileMenu}>
+        {mobileMenuActive ? <SVGMobileMenuOpenIcon size={25} /> : <SVGMobileMenuCloseIcon size={25} />}
+      </div>
+
+      <div className={styles["mobile-menu"]} ref={mobileMenuContentRef}>
+        <div className={styles["mobile-menu__content"]}>
+          {mainMenuItems.map((el) => (
+            <MainMenuItemMobile items={el} key={el.name} callback={setActiveMenuItemMobile} />
+          ))}
+        </div>
+      </div>
+    </>
   );
 };

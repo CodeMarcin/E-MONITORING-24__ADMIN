@@ -1,0 +1,32 @@
+.container--full-width {
+  width: 100%;
+}
+
+.container--main {
+  max-width: var(--widthSM);
+  margin: 0 auto;
+}
+
+@media screen and (min-width: 720px) {
+  .container--main {
+    max-width: var(--widthMD);
+  }
+}
+
+@media screen and (min-width: 960px) {
+  .container--main {
+    max-width: var(--widthLG);
+  }
+}
+
+@media screen and (min-width: 1140px) {
+  .container--main {
+    max-width: var(--widthXL);
+  }
+}
+
+@media screen and (min-width: 1320px) {
+  .container--main {
+    max-width: var(--widthXXL);
+  }
+}

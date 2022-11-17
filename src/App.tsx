@@ -1,9 +1,10 @@
-import { MainMenu } from "./Components/MainMenu/MainMenu";
+
+import { TopSection } from "./Pages/TopSection/TopSection";
 import { Login } from "./Pages/Login/Login";
 function App() {
   return (
     <div className="App">
-      <MainMenu />
+      <TopSection />
       <Login />
     </div>
   );
