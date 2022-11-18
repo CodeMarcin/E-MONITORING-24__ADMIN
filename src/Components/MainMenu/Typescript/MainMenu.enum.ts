@@ -1,7 +1,7 @@
 export enum EMainMenuItems {
-  CONTRACTORS,
-  INVOICES,
-  OFFERS,
-  SETTINGS,
-  LOGOUT,
+  // CONTRACTORS,
+  // INVOICES,
+  // OFFERS,
+  // SETTINGS,
+  // LOGOUT,
 }

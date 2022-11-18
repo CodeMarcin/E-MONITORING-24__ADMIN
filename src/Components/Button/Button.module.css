@@ -5,6 +5,7 @@
   cursor: pointer;
   border: none;
   transition: background-color 0.3s ease-in-out;
+  padding: 10px;
 }
 
 .button--basic {
@@ -20,9 +21,18 @@
   background: none;
   border: 2px solid var(--colorOne);
   color: var(--colorOne);
+  transition: background 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.button--second:hover {
+  background-color: var(--colorOne);
+  color: var(--colorWhite);
 }
 
 .button--full-width {
-  padding: 10px 0;
   width: 100%;
+}
+
+.button--flex-width {
+  width: 135px;
 }

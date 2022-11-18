@@ -9,9 +9,6 @@ import { ELoginReducerActionType, EInputsName } from "./Typescript/Login.enum";
 
 import { TInputSubCategory } from "../../Components/Input/Typescript/Input.type";
 
-import { IButtonProps } from "../../Components/Button/Typescript/Button.interface";
-import { EButtonType, EButtonWidth } from "../../Components/Button/Typescript/Button.enum";
-
 import { IUseValidateInput } from "../../Hooks/Typescript/useValidateInput.interface";
 import { EUseValidateInputValidateList } from "../../Hooks/Typescript/useValidateInput.enum";
 
@@ -87,22 +84,20 @@ export const Login = () => {
   ];
 
   const buttonLoginProps: IButtonProps = {
-    props: {
-      type: EButtonType.BASIC,
-      width: EButtonWidth.FULL,
-      value: LOGIN_LABELS.LOGIN_BUTTON,
-      callbacks: {
-        onClickCallback: () => {
-          useValidateInputy(
-            loginInputsValue,
-            (name, errorLabel) => {
-              dispatchLoginInputsValue({ type: ELoginReducerActionType.ADD_ERROR, name, errorLabel });
-            },
-            (name, errorLabel) => {
-              dispatchLoginInputsValue({ type: ELoginReducerActionType.REMOVE_ERRROR, name, errorLabel });
-            }
-          );
-        },
+    type: "BASIC",
+    width: "FULL",
+    value: LOGIN_LABELS.LOGIN_BUTTON,
+    callbacks: {
+      onClickCallback: () => {
+        useValidateInputy(
+          loginInputsValue,
+          (name, errorLabel) => {
+            dispatchLoginInputsValue({ type: ELoginReducerActionType.ADD_ERROR, name, errorLabel });
+          },
+          (name, errorLabel) => {
+            dispatchLoginInputsValue({ type: ELoginReducerActionType.REMOVE_ERRROR, name, errorLabel });
+          }
+        );
       },
     },
   };
@@ -113,7 +108,7 @@ export const Login = () => {
       {INPUTS.map((el, index) => (
         <Input props={el.props} key={index} />
       ))}
-      <Button props={buttonLoginProps.props} />
+      <Button items={buttonLoginProps} />
     </div>
   );
 };
