@@ -1,4 +1,4 @@
-import * as ENUM from './Global.enum'
+import * as ENUM from "./Global.enum";
 
 export {};
 declare global {
@@ -18,5 +18,10 @@ declare global {
     icon?: TPopupModalIcon;
     text?: string;
     buttons: IButtonProps[];
+  }
+
+  interface IHeaderProps {
+    title: string;
+    subtitle: string;
   }
 }
