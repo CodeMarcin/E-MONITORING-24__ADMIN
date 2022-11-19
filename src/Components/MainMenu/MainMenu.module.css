@@ -162,20 +162,3 @@
   }
 }
 
-@media screen and (min-width: 960px) {
-  .main-menu {
-    /* max-width: var(--widthLG); */
-  }
-}
-
-@media screen and (min-width: 1140px) {
-  .main-menu {
-    /* max-width: var(--widthXL); */
-  }
-}
-
-@media screen and (min-width: 1320px) {
-  .main-menu {
-    /* max-width: var(--widthXXL); */
-  }
-}

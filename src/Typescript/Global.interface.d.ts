@@ -1,8 +1,7 @@
-import * as ENUM from "./Global.enum";
-
 export {};
 declare global {
-  // BUTTON PROPS
+  // BUTTON COMPONENT
+  // @PROPS
   interface IButtonProps {
     type: TButtonType;
     width: TButtonWidth;
@@ -12,7 +11,8 @@ declare global {
     };
   }
 
-  // POPOP MODAL PROPS
+  // POPOP MODAL COMPONENT
+  // @PROPS
   interface IPopupModalProps {
     title: string;
     icon?: TPopupModalIcon;
@@ -20,8 +20,38 @@ declare global {
     buttons: IButtonProps[];
   }
 
+  // HEADER COMPONENT
+  // @PROPS
   interface IHeaderProps {
     title: string;
     subtitle: string;
+  }
+
+  // ACCORDION COMPONENT
+  // @PROPS
+  interface IAccordionProps {
+    title: string;
+    leftSection: IAccordionPropsLeftSection;
+    rightSection: boolean;
+    rightSectionCallbacks?: IAccordionPropsRightSectionCallbacks;
+    bottomMenu: IAccordionPropsBottomMenu[];
+  }
+
+  interface IAccordionPropsLeftSection {
+    leftTitle?: string;
+    leftContent: string[];
+    NIP: string;
+  }
+
+  interface IAccordionPropsRightSectionCallbacks {
+    loopCallback: () => void;
+    saveCallback: () => void;
+    sendCallback: () => void;
+  }
+  
+
+  interface IAccordionPropsBottomMenu { 
+    label: string;
+    action: string | (() => void);
   }
 }
