@@ -1,29 +1,39 @@
+import { useState } from "react";
+
 import { MainMenu } from "../../Components/MainMenu/MainMenu";
 import { Input } from "../../Components/Input/Input";
-
-import { IInputTextNumberPasswordProps } from "../../Components/Input/Typescript/Input.interface";
 
 import { useStyles } from "../../Hooks/useStyles";
 
 import styles from "./TopSection.module.css";
 
+const SEARCH_INPUT_PROPS: IInputProps = {
+  type: "text",
+  label: "Szukaj",
+  name: "search",
+  showName: false,
+  value: "",
+};
+
 export const TopSection = () => {
-  const SEARCH_INPUT_PROPS: IInputTextNumberPasswordProps = {
-    props: {
-      type: "text",
-      label: "Szukaj",
-      value: "",
-      callbacks: {
-        onChangeCallback: (e) => {},
-      },
-    },
+  const [inputsState, setInputsState] = useState(SEARCH_INPUT_PROPS);
+
+  const changeValue = (e: React.FormEvent<HTMLInputElement>) => {
+    setInputsState((prevState) => {
+      prevState.value = (e.target as HTMLInputElement).value;
+      return prevState;
+    });
+  };
+
+  const callbacks = {
+    onChangeCallback: changeValue,
   };
 
   return (
     <div className={useStyles("container--full-width", styles["top-section"])}>
-      <div className={styles['top-section__container']}>
+      <div className={styles["top-section__container"]}>
         <MainMenu />
-        <Input props={SEARCH_INPUT_PROPS.props} />
+        <Input items={inputsState} callbacks={callbacks} />
       </div>
     </div>
   );
