@@ -1,16 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
-import { useReducer } from "react";
+import { useState } from "react";
 
 import { Input } from "../../Components/Input/Input";
 import { Button } from "../../Components/Button/Button";
-
-import { ILoginPasswordActionChangeValue, ILoginPasswordActionError } from "./Typescript/Login.interface";
-import { ELoginReducerActionType, EInputsName } from "./Typescript/Login.enum";
-
-import { TInputSubCategory } from "../../Components/Input/Typescript/Input.type";
-
-import { IUseValidateInput } from "../../Hooks/Typescript/useValidateInput.interface";
-import { EUseValidateInputValidateList } from "../../Hooks/Typescript/useValidateInput.enum";
 
 import { useValidateInputy } from "../../Hooks/useValidateInput";
 
@@ -20,68 +12,41 @@ import { LOGIN_LABELS } from "./Login.labels";
 
 import styles from "./Login.module.css";
 
-const DEAFULT_LOGIN_INPUTS_VALUE: IUseValidateInput[] = [
+const INPUTS_PROPS: IInputProps[] = [
   {
-    name: EInputsName.LOGIN,
+    type: "text",
+    label: LOGIN_LABELS.LOGIN,
+    name: "login",
+    showName: false,
     value: "",
-    validate: true,
-    validateList: [EUseValidateInputValidateList.IS_EMPTY],
+    validateList: ["IS_EMPTY"],
     errorList: [],
   },
   {
-    name: EInputsName.PASSWORD,
+    type: "password",
+    label: LOGIN_LABELS.PASSWORD,
+    name: "password",
+    showName: false,
     value: "",
-    validate: true,
-    validateList: [EUseValidateInputValidateList.IS_EMPTY],
+    validateList: ["IS_EMPTY"],
     errorList: [],
   },
 ];
 
-const handleChangeLoginInputValue = (state: typeof DEAFULT_LOGIN_INPUTS_VALUE, action: ILoginPasswordActionChangeValue | ILoginPasswordActionError) => {
-  const { type, name } = action;
-  const index = state.findIndex((el) => el.name === name);
-  switch (type) {
-    case ELoginReducerActionType.CHANGE_VALUE:
-      state[index].value = action.value;
-      return [...state];
-    case ELoginReducerActionType.ADD_ERROR:
-      state[index].errorList?.push(action.errorLabel);
-      return [...state];
-    case ELoginReducerActionType.REMOVE_ERRROR:
-      state[index].errorList?.splice(state[index].errorList.indexOf(action.errorLabel), 1);
-      return [...state];
-  }
-};
-
 export const Login = () => {
-  const [loginInputsValue, dispatchLoginInputsValue] = useReducer(handleChangeLoginInputValue, DEAFULT_LOGIN_INPUTS_VALUE);
+  const [inputsState, setInputsState] = useState(INPUTS_PROPS);
 
-  const INPUTS: TInputSubCategory[] = [
-    {
-      props: {
-        type: "text",
-        label: LOGIN_LABELS.LOGIN,
-        name: EInputsName.LOGIN,
-        value: loginInputsValue[loginInputsValue.findIndex((el) => el.name === EInputsName.LOGIN)].value,
-        errorList: loginInputsValue[loginInputsValue.findIndex((el) => el.name === EInputsName.LOGIN)].errorList,
-        callbacks: {
-          onChangeCallback: (e) => dispatchLoginInputsValue({ type: ELoginReducerActionType.CHANGE_VALUE, value: e.currentTarget.value, name: e.currentTarget.name }),
-        },
-      },
-    },
-    {
-      props: {
-        type: "password",
-        label: LOGIN_LABELS.PASSWORD,
-        name: EInputsName.PASSWORD,
-        value: loginInputsValue[loginInputsValue.findIndex((el) => el.name === EInputsName.PASSWORD)].value,
-        errorList: loginInputsValue[loginInputsValue.findIndex((el) => el.name === EInputsName.PASSWORD)].errorList,
-        callbacks: {
-          onChangeCallback: (e) => dispatchLoginInputsValue({ type: ELoginReducerActionType.CHANGE_VALUE, value: e.currentTarget.value, name: e.currentTarget.name }),
-        },
-      },
-    },
-  ];
+  const changeValue = (e: React.FormEvent<HTMLInputElement>) => {
+    const itemIndexToChange = inputsState.findIndex((el) => el.name === (e.target as HTMLInputElement).name);
+    setInputsState((prevState) => {
+      prevState[itemIndexToChange].value = (e.target as HTMLInputElement).value;
+      return [...prevState];
+    });
+  };
+
+  const callbacksInput = {
+    onChangeCallback: changeValue,
+  };
 
   const buttonLoginProps: IButtonProps = {
     type: "BASIC",
@@ -89,15 +54,7 @@ export const Login = () => {
     value: LOGIN_LABELS.LOGIN_BUTTON,
     callbacks: {
       onClickCallback: () => {
-        useValidateInputy(
-          loginInputsValue,
-          (name, errorLabel) => {
-            dispatchLoginInputsValue({ type: ELoginReducerActionType.ADD_ERROR, name, errorLabel });
-          },
-          (name, errorLabel) => {
-            dispatchLoginInputsValue({ type: ELoginReducerActionType.REMOVE_ERRROR, name, errorLabel });
-          }
-        );
+        useValidateInputy(inputsState, setInputsState);
       },
     },
   };
@@ -105,8 +62,8 @@ export const Login = () => {
   return (
     <div className={styles["login"]}>
       <SVGTopLoginIcon size={100} color={"#7a7a7a"} />
-      {INPUTS.map((el, index) => (
-        <Input props={el.props} key={index} />
+      {inputsState.map((el, index) => (
+        <Input items={el} key={index} callbacks={callbacksInput} />
       ))}
       <Button items={buttonLoginProps} />
     </div>

@@ -6,9 +6,28 @@ declare global {
     type: TButtonType;
     width: TButtonWidth;
     value: string;
+    center?: boolean;
     callbacks: {
       onClickCallback: () => void;
     };
+  }
+
+  // INPUT COMPONENT
+  // @PROPS
+  interface IInputProps {
+    type: TInputType;
+    label: string;
+    name: string;
+    value: string;
+    showName: boolean;
+    minLength?: number;
+    maxLength?: number;
+    validateList?: TValidataList[];
+    errorList?: string[];
+  }
+
+  interface IInputCallbacks {
+    onChangeCallback: (e: React.FormEvent<HTMLInputElement>) => void;
   }
 
   // POPOP MODAL COMPONENT
@@ -48,9 +67,8 @@ declare global {
     saveCallback: () => void;
     sendCallback: () => void;
   }
-  
 
-  interface IAccordionPropsBottomMenu { 
+  interface IAccordionPropsBottomMenu {
     label: string;
     action: string | (() => void);
   }

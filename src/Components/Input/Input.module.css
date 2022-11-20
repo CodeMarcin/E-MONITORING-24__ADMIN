@@ -3,6 +3,7 @@
   flex-direction: column;
   row-gap: 5px;
   width: 100%;
+   font-family: var(--fontBold);
 }
 
 .inputTextNumberPassword {
@@ -11,7 +12,7 @@
   width: 100%;
   padding: 10px 25px;
   outline: none;
-  font-family: var(--fontBold);
+
   color: var(--colorOne);
 }
 
