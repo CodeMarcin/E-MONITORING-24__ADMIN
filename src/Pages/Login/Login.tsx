@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Input } from "../../Components/Input/Input";
 import { Button } from "../../Components/Button/Button";
 
-import { useValidateInputy } from "../../Hooks/useValidateInput";
+import { useValidateInputs } from "../../Hooks/useValidateInput";
 
 import { SVGTopLoginIcon } from "../../Utilities/SVG";
 
@@ -54,7 +54,7 @@ export const Login = () => {
     value: LOGIN_LABELS.LOGIN_BUTTON,
     callbacks: {
       onClickCallback: () => {
-        useValidateInputy(inputsState, setInputsState);
+        useValidateInputs(inputsState, setInputsState);
       },
     },
   };

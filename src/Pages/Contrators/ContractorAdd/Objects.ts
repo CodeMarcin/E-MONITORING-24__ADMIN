@@ -25,8 +25,9 @@ export const ADD_CONTRATOR_INPUTS: IInputProps[] = [
     name: "contractor-zipcode",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    validateList: ["ZIP_CODE_VALIDATE", "IS_EMPTY"],
     errorList: [],
+    maxLength: 6,
   },
   {
     label: CONTRATOR_ADD_LABELS.CITY,
@@ -50,11 +51,11 @@ export const ADD_CONTRATOR_INPUTS: IInputProps[] = [
     name: "contractor-nip",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    validateList: ["IS_EMPTY", "NIP_VALIDATE", "IS_NIP_EXIST"],
     errorList: [],
+    maxLength: 13,
   },
 ];
-
 
 export const HEADER_PROPS: IHeaderProps = {
   title: CONTRATOR_ADD_LABELS.HEADER_TITLE,
