@@ -1,6 +1,6 @@
 import { CONTRATOR_ADD_LABELS } from "./ContractorAdd.labels";
 
-export const ADD_CONTRATOR_INPUTS: IInputProps[] = [
+export const ADD_CONTRATOR_INPUTS_PROPS: IInputProps[] = [
   {
     label: CONTRATOR_ADD_LABELS.NAME,
     type: "text",
@@ -51,7 +51,7 @@ export const ADD_CONTRATOR_INPUTS: IInputProps[] = [
     name: "contractor-nip",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY", "NIP_VALIDATE", "IS_NIP_EXIST"],
+    validateList: ["IS_NIP_EXIST", "IS_EMPTY", "NIP_VALIDATE"],
     errorList: [],
     maxLength: 13,
   },

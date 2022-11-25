@@ -48,16 +48,16 @@ export const Login = () => {
     onChangeCallback: changeValue,
   };
 
-  const buttonLoginProps: IButtonProps = {
-    type: "BASIC",
-    width: "FULL",
-    value: LOGIN_LABELS.LOGIN_BUTTON,
-    callbacks: {
-      onClickCallback: () => {
-        useValidateInputs(inputsState, setInputsState);
-      },
-    },
-  };
+  // const buttonLoginProps: IButtonProps = {
+  //   type: "BASIC",
+  //   width: "FULL",
+  //   value: LOGIN_LABELS.LOGIN_BUTTON,
+  //   callbacks: {
+  //     onClickCallback: () => {
+  //       // useValidateInputs(inputsState, setInputsState);
+  //     },
+  //   },
+  // };
 
   return (
     <div className={styles["login"]}>
@@ -65,7 +65,7 @@ export const Login = () => {
       {inputsState.map((el, index) => (
         <Input items={el} key={index} callbacks={callbacksInput} />
       ))}
-      <Button items={buttonLoginProps} />
+      {/* <Button items={buttonLoginProps} /> */}
     </div>
   );
 };
