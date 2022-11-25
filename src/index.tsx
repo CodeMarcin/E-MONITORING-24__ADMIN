@@ -6,10 +6,17 @@ import "./CSS/vars.css";
 import "./CSS/styleovveride.css";
 import "./CSS/styles.css";
 import App from "./App";
+import { ContractorAdd } from "./Pages/Contrators/ContractorAdd/ContractorAdd";
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
+    children: [
+      {
+        path: "/contractorAdd",
+        element: <ContractorAdd />,
+      },
+    ],
   },
 ]);
 
