@@ -1,7 +1,5 @@
 import { Link } from "react-router-dom";
 
-import { IMainMenuItems } from "./Typescript/MainMenu.interface";
-
 import { useStyles } from "../../Hooks/useStyles";
 
 import styles from "./MainMenu.module.css";

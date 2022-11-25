@@ -3,8 +3,6 @@ import { useState, useRef } from "react";
 import { MainMenuItem } from "./MainMenuItem";
 import { MainMenuItemMobile } from "./MainMenuItemMobile";
 
-import { IMainMenuItems, IMainMenuSubItems } from "./Typescript/MainMenu.interface";
-
 import { SVGMobileMenuCloseIcon, SVGMobileMenuOpenIcon } from "../../Utilities/SVG";
 
 import { MENU_ITEMS } from "./Objects";
@@ -34,7 +32,7 @@ export const MainMenu = () => {
     });
   };
 
-  const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent>) => {
+  const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent> | React.SyntheticEvent<HTMLDivElement, MouseEvent>) => {
     e.stopPropagation();
     const eventTarget = e.target as HTMLDivElement;
     const parentElement = eventTarget.parentElement as HTMLDivElement;
@@ -83,7 +81,7 @@ export const MainMenu = () => {
       <div className={styles["mobile-menu"]} ref={mobileMenuContentRef}>
         <div className={styles["mobile-menu__content"]}>
           {mainMenuItems.map((el) => (
-            <MainMenuItemMobile items={el} key={el.name} callback={setActiveMenuItemMobile} />
+            <MainMenuItemMobile items={el} key={el.name} toogleCallback={setActiveMenuItemMobile} clickCallback={toggleMobileMenu} />
           ))}
         </div>
       </div>

@@ -1,5 +1,3 @@
-import { IMainMenuItems } from "./Typescript/MainMenu.interface";
-
 import { MAIN_MENU_LABELS } from "./MainMenu.labels";
 
 export const MENU_ITEMS: IMainMenuItems[] = [
@@ -15,9 +13,9 @@ export const MENU_ITEMS: IMainMenuItems[] = [
         link: "link",
       },
       {
-        name: "contractorsAdd",
+        name: "contractorAdd",
         label: MAIN_MENU_LABELS.CONTRACTORS_ADD,
-        link: "link",
+        link: "/contractorAdd",
       },
     ],
   },
@@ -33,7 +31,7 @@ export const MENU_ITEMS: IMainMenuItems[] = [
         link: "link",
       },
       {
-        name: "invoicesAdd",
+        name: "invoiceAdd",
         label: MAIN_MENU_LABELS.INVOICES_ADD,
         link: "link",
       },
