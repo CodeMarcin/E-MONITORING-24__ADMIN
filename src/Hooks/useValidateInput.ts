@@ -1,29 +1,72 @@
+import { findContractorByNIPAPI } from "../Api/Contractors";
+
 import { USE_VALIDATE_INPUT_LABELS } from "./Labels/useValidateInput.labels";
 
-export const useValidateInputy = (inputs: IInputProps[], setInputs: React.Dispatch<React.SetStateAction<IInputProps[]>>) => {
-  const addError = (index: number, errorLabel: string) => {
-    setInputs((prevState) => {
-      prevState[index].errorList?.push(errorLabel);
-      return [...prevState];
-    });
+export const useValidateInputs = async (stateInput: IInputProps) => {
+  const input = stateInput;
+
+  const addError = (errorLabel: string) => {
+    input.errorList?.push(errorLabel);
   };
 
-  const removeError = (index: number, errorLabel: string) => {
-    setInputs((prevState) => {
-      prevState[index].errorList = prevState[index].errorList?.filter((el) => el !== errorLabel);
-      return [...prevState];
-    });
+  const removeError = (errorLabel: string) => {
+    input.errorList = input.errorList?.filter((el) => el !== errorLabel);
   };
 
-  inputs.forEach((el, index) => {
-    el.validateList?.forEach((item) => {
-      if (!el.errorList) return;
-      switch (item) {
-        case "IS_EMPTY":
-          if (el.value.length === 0 && el.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NO_EMPTY) === -1) addError(index, USE_VALIDATE_INPUT_LABELS.NO_EMPTY);
-          else if (el.value.length !== 0 && el.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NO_EMPTY) !== -1) removeError(index, USE_VALIDATE_INPUT_LABELS.NO_EMPTY);
-          break;
-      }
-    });
-  });
+  const validateIsEmpty = () => {
+    if (input.value.length === 0 && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NO_EMPTY) === -1) addError(USE_VALIDATE_INPUT_LABELS.NO_EMPTY);
+    else if (input.value.length !== 0 && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NO_EMPTY) !== -1) removeError(USE_VALIDATE_INPUT_LABELS.NO_EMPTY);
+  };
+
+  const validateNipIsValid = () => {
+    if (input.value.length !== 0 && (input.value.length !== 13 || !checkNipIsValid()) && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE) === -1)
+      addError(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE);
+    else if (input.value.length === 13 && checkNipIsValid() && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE) !== -1)
+      removeError(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE);
+  };
+
+  const validaZipCodeValid = () => {
+    if (input.value.length !== 0 && (input.value.length !== 6 || !checkZipCodeIsValid()) && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.ZIP_CODE_VALIDATE) === -1)
+      addError(USE_VALIDATE_INPUT_LABELS.ZIP_CODE_VALIDATE);
+    else if (input.value.length === 6 && checkZipCodeIsValid() && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.ZIP_CODE_VALIDATE) !== -1)
+      removeError(USE_VALIDATE_INPUT_LABELS.ZIP_CODE_VALIDATE);
+  };
+
+  const checkNipIsValid = () => {
+    let validation = true;
+    for (let i = 0; i < input.value.length; i++) {
+      if (i === 3 || i === 7 || i === 10) validation = input.value[i] !== "-";
+      else validation = !!parseInt(input.value[i]);
+    }
+    return validation;
+  };
+
+  const checkZipCodeIsValid = () => {
+    let validation = true;
+    for (let i = 0; i < input.value.length; i++) {
+      if (i === 2) validation = input.value[i] !== "-";
+      else validation = !!parseInt(input.value[i]);
+    }
+    return validation;
+  };
+
+  const checkIsNIPExistInDataBase = async () => {
+    if (input.value.length !== 0 && checkNipIsValid()) {
+      const isContractorsFromAPI = (await findContractorByNIPAPI(input.value, 1)).data.length !== 0;
+      if (input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NIP_EXIST) === -1 && isContractorsFromAPI) addError(USE_VALIDATE_INPUT_LABELS.NIP_EXIST);
+      else if (input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NIP_EXIST) !== -1 && !isContractorsFromAPI) removeError(USE_VALIDATE_INPUT_LABELS.NIP_EXIST);
+    }
+  };
+
+  if (input.validateList) {
+    return Promise.all(
+      input.validateList?.map(async (el) => {
+        if (el === "IS_NIP_EXIST") await checkIsNIPExistInDataBase();
+        if (el === "IS_EMPTY") validateIsEmpty();
+        if (el === "ZIP_CODE_VALIDATE") validaZipCodeValid();
+        if (el === "NIP_VALIDATE") validateNipIsValid();
+        return input;
+      })
+    );
+  }
 };
