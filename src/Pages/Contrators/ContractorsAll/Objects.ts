@@ -1,6 +1,6 @@
 import { CONTRATORS_ALL_LABELS } from "./ContractorsAll.labels";
 
-export const FILTER_SETTINGS: IFilters = {
+export const FILTER_SETTINGS: ISort = {
   sortBy: "createdAt",
   sortType: "desc",
   limit: 0,

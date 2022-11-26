@@ -88,8 +88,8 @@ declare global {
     link: string;
   }
 
-  // FILTER SETTINGS
-  export interface IFilters {
+  // SORT SETTINGS
+  export interface ISort {
     sortBy: string;
     sortType: "desc" | "asc";
     limit: number;
