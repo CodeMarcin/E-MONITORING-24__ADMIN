@@ -87,4 +87,11 @@ declare global {
     label: string;
     link: string;
   }
+
+  // FILTER SETTINGS
+  export interface IFilters {
+    sortBy: string;
+    sortType: "desc" | "asc";
+    limit: number;
+  }
 }
