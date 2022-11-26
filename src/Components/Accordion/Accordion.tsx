@@ -12,7 +12,7 @@ import styles from "./Accordion.module.css";
 export const Accordion = (props: { items: IAccordionProps }) => {
   const { items } = props;
   const { title, leftSection, rightSection, rightSectionCallbacks, bottomMenu } = items;
-  const { leftTitle, leftContent, NIP } = leftSection;
+  const { leftContent, NIP } = leftSection;
 
   const [contentVisible, setContentVisible] = useState<boolean>(false);
 
@@ -48,7 +48,7 @@ export const Accordion = (props: { items: IAccordionProps }) => {
         <>
           <div className={styles["accordion__container"]}>
             <div className={styles["section"]}>
-              {leftTitle && <p className={styles["section-title"]}>{leftTitle}</p>}
+              {leftSection.leftTitle && <p className={styles["section-title"]}>{leftSection.leftTitle}</p>}
               {leftContent.map((el, index) => (
                 <p key={index}>{el}</p>
               ))}

@@ -10,7 +10,7 @@ export const MENU_ITEMS: IMainMenuItems[] = [
       {
         name: "contractorsAll",
         label: MAIN_MENU_LABELS.CONTRACTORS_ALL,
-        link: "link",
+        link: "/contractorsAll",
       },
       {
         name: "contractorAdd",

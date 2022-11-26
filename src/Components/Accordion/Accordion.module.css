@@ -3,7 +3,6 @@
   flex-direction: column;
   row-gap: 20px;
   width: 100%;
-  padding: 0 24px;
   min-height: 40px;
   padding-bottom: 20px;
   border-bottom: 1px solid var(--colorTwo);
@@ -61,6 +60,7 @@
 
 .section__nip-label {
   padding: 0 5px 0 0;
+  font-weight: 900;
 }
 
 .section--right {
@@ -71,7 +71,7 @@
 .accordion__menu {
   display: flex;
   justify-content: flex-end;
-  column-gap: 50px;
+  column-gap: 40px;
   font-size: 12px;
 }
 

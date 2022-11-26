@@ -6,6 +6,7 @@ import { MainMenuItemMobile } from "./MainMenuItemMobile";
 import { SVGMobileMenuCloseIcon, SVGMobileMenuOpenIcon } from "../../Utilities/SVG";
 
 import { MENU_ITEMS } from "./Objects";
+
 import styles from "./MainMenu.module.css";
 
 export const MainMenu = () => {
@@ -16,29 +17,35 @@ export const MainMenu = () => {
   const mobileMenuContentRef = useRef<HTMLDivElement>(null);
 
   const setActiveMenuItem = (e: React.SyntheticEvent<HTMLLIElement, MouseEvent>) => {
-    setMainMenuItems((prevState) => {
-      prevState.forEach((el) => {
-        if (el.name === (e.target as HTMLLIElement).dataset.name) el.active = true;
-        else el.active = false;
-      });
-      return [...prevState];
-    });
+    const targetName = (e.target as HTMLLIElement).dataset.name;
+    setMainMenuItems((prevState) =>
+      prevState.map((el) => {
+        if (el.name === targetName) return { ...el, active: true };
+        return { ...el, active: false };
+      })
+    );
 
-    setSubMenuItems((prevState) => {
-      prevState = [];
-      const subMenu = mainMenuItems.find((el) => el.active);
-      if (subMenu?.subItems) prevState = [...subMenu.subItems];
-      return [...prevState];
+    setSubMenuItems(() => {
+      const subMenu = mainMenuItems.find((el) => el.name === targetName);
+      if (subMenu?.subItems) return [...subMenu.subItems];
+      return [];
     });
   };
 
-  const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent> | React.SyntheticEvent<HTMLDivElement, MouseEvent>) => {
+  const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent>) => {
+    console.log("setActiveMenuItemMobil");
     e.stopPropagation();
     const eventTarget = e.target as HTMLDivElement;
     const parentElement = eventTarget.parentElement as HTMLDivElement;
     setMainMenuItems((prevState) => {
       const itemToChange = prevState.find((el) => el.name === eventTarget.dataset.name || el.name === parentElement?.dataset.name);
-      if (itemToChange) itemToChange.active = !itemToChange.active;
+      if (itemToChange)
+        return prevState.map((el) => {
+          if (el.name === itemToChange.name) {
+            return { ...el, active: !el.active };
+          }
+          return el;
+        });
       return [...prevState];
     });
   };
@@ -49,14 +56,12 @@ export const MainMenu = () => {
   };
 
   const clearActiveMenu = () => {
-    setMainMenuItems((prevState) => {
-      prevState.forEach((el) => (el.active = false));
-      return [...prevState];
-    });
-    setSubMenuItems((prevState) => {
-      prevState = [];
-      return [...prevState];
-    });
+    setMainMenuItems((prevState) =>
+      prevState.map((el) => {
+        return { ...el, active: false };
+      })
+    );
+    setSubMenuItems([]);
   };
 
   return (

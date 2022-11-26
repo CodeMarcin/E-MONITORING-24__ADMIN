@@ -10,5 +10,5 @@ declare global {
   // POPUM MODAL
   type TPopupModalIcon = "OK" | "ERROR" | "CONFIRM";
   // LOADER TYPE
-  type TLoaderType = "CHECKING_DATA" | "SAVING";
+  type TLoaderType = "CHECKING_DATA" | "LOADING_DATA" | "SAVING";
 }

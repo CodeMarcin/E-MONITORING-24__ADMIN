@@ -87,4 +87,11 @@ declare global {
     label: string;
     link: string;
   }
+
+  // SORT SETTINGS
+  export interface ISort {
+    sortBy: string;
+    sortType: "desc" | "asc";
+    limit: number;
+  }
 }

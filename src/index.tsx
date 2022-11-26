@@ -7,6 +7,7 @@ import "./CSS/styleovveride.css";
 import "./CSS/styles.css";
 import App from "./App";
 import { ContractorAdd } from "./Pages/Contrators/ContractorAdd/ContractorAdd";
+import { ContractorsAll } from "./Pages/Contrators/ContractorsAll/ContractorsAll";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -16,6 +17,10 @@ const router = createBrowserRouter([
         path: "/contractorAdd",
         element: <ContractorAdd />,
       },
+      {
+        path: '/contractorsAll',
+        element: <ContractorsAll />
+      }
     ],
   },
 ]);
