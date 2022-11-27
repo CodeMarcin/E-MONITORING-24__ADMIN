@@ -24,7 +24,9 @@ export const ContractorsAll = () => {
 
   const getContractorsFromAPI = useCallback(async () => {
     setApiDataLoad(true);
+
     const contractorsDataFromAPI = await getAllContractorsAPI(sort.sortBy, sort.sortType, sort.limit);
+
     setContractorsData(() => {
       return contractorsDataFromAPI.data.map((el: IContractorAPI, index: number): IAccordionProps => {
         const leftSection = { leftContent: [el.address, `${el.zipcode} ${el.city}`, el.email], NIP: el.nip };
@@ -43,14 +45,14 @@ export const ContractorsAll = () => {
               }),
           },
         ];
-
         return { title: el.name, leftSection, rightSection: false, bottomMenu };
       });
     });
+
     setDeleteConfirmModal(() => {
       return contractorsDataFromAPI.data.map((el: IContractorAPI): IPopupModalProps => {
         const modalButtons: IButtonProps[] = [
-          { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: toggleDeleteModal } },
+          { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: closeDeleteModal } },
           { type: "BASIC", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM, callbacks: { onClickCallback: () => {} } },
         ];
         const checkBox: IInputProps = {
@@ -66,7 +68,7 @@ export const ContractorsAll = () => {
           text: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TEXT,
           checkbox: checkBox,
           buttons: modalButtons,
-          toggleModalCallback: toggleDeleteModal,
+          toggleModalCallback: closeDeleteModal,
         };
       });
     });
@@ -74,7 +76,7 @@ export const ContractorsAll = () => {
     setApiDataLoad(false);
   }, [sort]);
 
-  const toggleDeleteModal = () => {
+  const closeDeleteModal = () => {
     setDeleteConfirmModal((prevState) =>
       prevState.map((el) => {
         return { ...el, show: false };
