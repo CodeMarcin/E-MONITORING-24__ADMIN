@@ -9,6 +9,9 @@ export const findContractorByNIPAPI = (nip: string, limit: number) => {
 };
 
 export const addContractorAPI = (contractor: IContractorAPI) => {
-  console.log(contractor, "con");
   return http.post("/contractors/addContractor", contractor);
+};
+
+export const delteContractorByIDAPI = (id: string) => {
+  return http.delete(`/contractors/delteContractorByID/${id}`);
 };

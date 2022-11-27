@@ -1,7 +1,7 @@
 export {};
 declare global {
   interface IContractorAPI {
-    id?: string;
+    _id?: string;
     name: string;
     address: string;
     zipcode: string;

@@ -8,7 +8,7 @@ import { Loader } from "../../../Components/Loader/Loader";
 
 import { useStyles } from "../../../Hooks/useStyles";
 
-import { getAllContractorsAPI } from "../../../Api/Contractors";
+import { getAllContractorsAPI, delteContractorByIDAPI } from "../../../Api/Contractors";
 
 import { SORT_SETTINGS, HEADER_PROPS } from "./Objects";
 
@@ -21,6 +21,7 @@ export const ContractorsAll = () => {
   const [deleteConfirmModal, setDeleteConfirmModal] = useState<IPopupModalProps[]>([]);
   const [sort, setSort] = useState(SORT_SETTINGS);
   const [apiDataLoad, setApiDataLoad] = useState(false);
+  const [loaderText, setLoaderText] = useState<TLoaderType>("LOADING_DATA");
 
   const getContractorsFromAPI = useCallback(async () => {
     setApiDataLoad(true);
@@ -45,7 +46,7 @@ export const ContractorsAll = () => {
               }),
           },
         ];
-        return { title: el.name, leftSection, rightSection: false, bottomMenu };
+        return { id: el._id, title: el.name, leftSection, rightSection: false, bottomMenu };
       });
     });
 
@@ -53,7 +54,12 @@ export const ContractorsAll = () => {
       return contractorsDataFromAPI.data.map((el: IContractorAPI): IPopupModalProps => {
         const modalButtons: IButtonProps[] = [
           { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: closeDeleteModal } },
-          { type: "BASIC", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM, callbacks: { onClickCallback: () => {} } },
+          {
+            type: "BASIC",
+            width: "FLEX",
+            value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM,
+            callbacks: { onClickCallback: () => el._id && deleteContratorByIDAPI(el._id) },
+          },
         ];
         const checkBox: IInputProps = {
           name: "delete-invoices",
@@ -84,9 +90,14 @@ export const ContractorsAll = () => {
     );
   };
 
-  const deleteContratorAPI = () => {
-
-  }
+  const deleteContratorByIDAPI = async (id: string) => {
+    closeDeleteModal();
+    setLoaderText("DELETING");
+    setApiDataLoad(true);
+    await delteContractorByIDAPI(id);
+    setLoaderText("LOADING_DATA");
+    await getContractorsFromAPI();
+  };
 
   useEffect(() => {
     getContractorsFromAPI();
@@ -96,17 +107,16 @@ export const ContractorsAll = () => {
     <>
       {apiDataLoad && (
         <Portal>
-          <Loader type={"LOADING_DATA"} />
+          <Loader type={loaderText} />
         </Portal>
       )}
-      {deleteConfirmModal && <Portal>{/* <PopupModal items={{}} /> */}</Portal>}
       <div className={useStyles("container--full-width", styles["contractors-all"])}>
         <Header items={HEADER_PROPS} />
         <div className={useStyles("container--main", styles["container"])}>
           {contractorsData &&
             contractorsData.map((el, index) => {
               return (
-                <Fragment key={index}>
+                <Fragment key={el.id}>
                   <Accordion items={el} />
                   {deleteConfirmModal[index].show && <PopupModal items={deleteConfirmModal[index]} />}
                 </Fragment>
