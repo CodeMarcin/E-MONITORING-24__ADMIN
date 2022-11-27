@@ -3,7 +3,7 @@
   flex-direction: column;
   row-gap: 5px;
   width: 100%;
-   font-family: var(--fontBold);
+  font-family: var(--fontBold);
 }
 
 .inputTextNumberPassword {
@@ -12,8 +12,12 @@
   width: 100%;
   padding: 10px 25px;
   outline: none;
-
   color: var(--colorOne);
+}
+
+.inputCheckbox {
+  display: flex;
+  column-gap: 10px;
 }
 
 .input-error {
