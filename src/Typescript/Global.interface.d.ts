@@ -33,10 +33,13 @@ declare global {
   // POPOP MODAL COMPONENT
   // @PROPS
   interface IPopupModalProps {
+    show: boolean;
     title: string;
     icon?: TPopupModalIcon;
     text?: string;
     buttons: IButtonProps[];
+    checkbox?: IInputProps;
+    toggleModalCallback: () => void;
   }
 
   // HEADER COMPONENT

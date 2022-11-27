@@ -5,7 +5,7 @@ declare global {
   type TButtonType = "BASIC" | "SECOND";
   type TButtonWidth = "FLEX" | "FULL";
   // INPUT
-  type TInputType = "text" | "number" | "password" | "textarea";
+  type TInputType = "text" | "number" | "password" | "textarea" | "checkbox";
   type TValidataList = "IS_EMPTY" | "NIP_VALIDATE" | "ZIP_CODE_VALIDATE" | "IS_NIP_EXIST";
   // POPUM MODAL
   type TPopupModalIcon = "OK" | "ERROR" | "CONFIRM";

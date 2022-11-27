@@ -1,14 +1,15 @@
 import { InputTextNumberPassword } from "./InputTextNumberPassword";
 
 import styles from "./Input.module.css";
+import { InputCheckbox } from "./InputCheckbox";
 
 export const Input = (props: { items: IInputProps; callbacks: IInputCallbacks }) => {
   const { items, callbacks } = props;
-  const { label, type, showName, errorList } = items;
+  const { type, errorList } = items;
   return (
     <label className={styles["label"]}>
-      {showName && `${label}:`}
-      {type !== "textarea" && <InputTextNumberPassword items={items} callbacks={callbacks} />}
+      {(type === "text" || type === "password") && <InputTextNumberPassword items={items} callbacks={callbacks} />}
+      {type === "checkbox" && <InputCheckbox items={items} callbacks={callbacks} />}
       {errorList && (
         <div className={styles["input-error"]}>
           {errorList.map((el, index) => (
