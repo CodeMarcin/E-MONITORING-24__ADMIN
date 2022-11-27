@@ -8,7 +8,7 @@ declare global {
     value: string;
     center?: boolean;
     callbacks: {
-      onClickCallback: () => void;
+      onClickCallback: TButtonOnClickCallback;
     };
   }
 
@@ -52,6 +52,7 @@ declare global {
   // ACCORDION COMPONENT
   // @PROPS
   interface IAccordionProps {
+    id?: string;
     title: string;
     leftSection: IAccordionPropsLeftSection;
     rightSection: boolean;

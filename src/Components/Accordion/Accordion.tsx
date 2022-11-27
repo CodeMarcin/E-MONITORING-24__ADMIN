@@ -49,9 +49,7 @@ export const Accordion = (props: { items: IAccordionProps }) => {
           <div className={styles["accordion__container"]}>
             <div className={styles["section"]}>
               {leftSection.leftTitle && <p className={styles["section-title"]}>{leftSection.leftTitle}</p>}
-              {leftContent.map((el, index) => (
-                <p key={index}>{el}</p>
-              ))}
+              {leftContent.map((el, index) => el && <p key={index}>{el}</p>)}
               <div className={styles["section__nip"]}>
                 <span className={styles["section__nip-label"]}>{ACCORDIONS_LABELS.NIP}: </span> {NIP}
               </div>
