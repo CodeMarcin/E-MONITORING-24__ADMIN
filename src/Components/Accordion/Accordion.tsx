@@ -1,6 +1,8 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState } from "react";
 
+import { Link } from "react-router-dom";
+
 import { SVGArrowCircleIcon, SVGCLoopIcon, SVGCSaveIcon, SVGCSendMailIcon } from "../../Utilities/SVG";
 
 import { useStyles } from "../../Hooks/useStyles";
@@ -23,9 +25,9 @@ export const Accordion = (props: { items: IAccordionProps }) => {
   const prepareMenuItem = (el: IAccordionPropsBottomMenu) => {
     if (typeof el.action === "string")
       return (
-        <a className={styles["accordion__menu-item"]} href={el.action}>
+        <Link to={el.action} className={styles["accordion__menu-item"]}>
           {el.label}
-        </a>
+        </Link>
       );
     else
       return (
