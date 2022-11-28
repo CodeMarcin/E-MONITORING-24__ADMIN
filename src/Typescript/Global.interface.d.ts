@@ -15,10 +15,12 @@ declare global {
   // INPUT COMPONENT
   // @PROPS
   interface IInputProps {
+    id?: string;
     type: TInputType;
     label: string;
     name: string;
     value: string;
+    originalValue?: string;
     showName: boolean;
     minLength?: number;
     maxLength?: number;

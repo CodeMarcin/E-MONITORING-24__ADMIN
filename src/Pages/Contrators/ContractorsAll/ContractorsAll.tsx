@@ -24,62 +24,66 @@ export const ContractorsAll = () => {
   const [loaderText, setLoaderText] = useState<TLoaderType>("LOADING_DATA");
 
   const getContractorsFromAPI = useCallback(async () => {
-    setApiDataLoad(true);
+    try {
+      setApiDataLoad(true);
 
-    const contractorsDataFromAPI = await getAllContractorsAPI(sort.sortBy, sort.sortType, sort.limit);
+      const contractorsDataFromAPI = await getAllContractorsAPI(sort.sortBy, sort.sortType, sort.limit);
 
-    setContractorsData(() => {
-      return contractorsDataFromAPI.data.map((el: IContractorAPI, index: number): IAccordionProps => {
-        const leftSection = { leftContent: [el.address, `${el.zipcode} ${el.city}`, el.email], NIP: el.nip };
-        const bottomMenu: IAccordionPropsBottomMenu[] = [
-          { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_ADD_INVOICE, action: "wp.pl" },
-          { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_EDIT, action: "wp.pl" },
-          { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_INVOICES, action: "wp.pl" },
-          {
-            label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_DELETE,
-            action: () =>
-              setDeleteConfirmModal((prevState) => {
-                return prevState.map((el, elIndex) => {
-                  if (elIndex === index) return { ...el, show: true };
-                  return el;
-                });
-              }),
-          },
-        ];
-        return { id: el._id, title: el.name, leftSection, rightSection: false, bottomMenu };
+      setContractorsData(() => {
+        return contractorsDataFromAPI.data.map((el: IContractorAPI, index: number): IAccordionProps => {
+          const leftSection = { leftContent: [el.address, `${el.zipcode} ${el.city}`, el.email], NIP: el.nip };
+          const bottomMenu: IAccordionPropsBottomMenu[] = [
+            { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_ADD_INVOICE, action: "wp.pl" },
+            { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_EDIT, action: `/contractorEdit/${el._id}` },
+            { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_INVOICES, action: "wp.pl" },
+            {
+              label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_DELETE,
+              action: () =>
+                setDeleteConfirmModal((prevState) => {
+                  return prevState.map((el, elIndex) => {
+                    if (elIndex === index) return { ...el, show: true };
+                    return el;
+                  });
+                }),
+            },
+          ];
+          return { id: el._id, title: el.name, leftSection, rightSection: false, bottomMenu };
+        });
       });
-    });
 
-    setDeleteConfirmModal(() => {
-      return contractorsDataFromAPI.data.map((el: IContractorAPI): IPopupModalProps => {
-        const modalButtons: IButtonProps[] = [
-          { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: closeDeleteModal } },
-          {
-            type: "BASIC",
-            width: "FLEX",
-            value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM,
-            callbacks: { onClickCallback: () => el._id && deleteContratorByIDAPI(el._id) },
-          },
-        ];
-        const checkBox: IInputProps = {
-          name: "delete-invoices",
-          label: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_DELETE_ALL_INVOICES_TEXT,
-          showName: false,
-          type: "checkbox",
-          value: "true",
-        };
-        return {
-          show: false,
-          title: `${CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TITLE} ${el.name}?`,
-          text: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TEXT,
-          checkbox: checkBox,
-          buttons: modalButtons,
-          toggleModalCallback: closeDeleteModal,
-        };
+      setDeleteConfirmModal(() => {
+        return contractorsDataFromAPI.data.map((el: IContractorAPI): IPopupModalProps => {
+          const modalButtons: IButtonProps[] = [
+            { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: closeDeleteModal } },
+            {
+              type: "BASIC",
+              width: "FLEX",
+              value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM,
+              callbacks: { onClickCallback: () => el._id && deleteContratorByIDAPI(el._id) },
+            },
+          ];
+          const checkBox: IInputProps = {
+            name: "delete-invoices",
+            label: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_DELETE_ALL_INVOICES_TEXT,
+            showName: false,
+            type: "checkbox",
+            value: "true",
+          };
+          return {
+            show: false,
+            title: `${CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TITLE} ${el.name}?`,
+            text: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TEXT,
+            checkbox: checkBox,
+            buttons: modalButtons,
+            toggleModalCallback: closeDeleteModal,
+          };
+        });
       });
-    });
 
-    setApiDataLoad(false);
+      setApiDataLoad(false);
+    } catch (error) {
+      console.error(error);
+    }
   }, [sort]);
 
   const closeDeleteModal = () => {
@@ -91,12 +95,16 @@ export const ContractorsAll = () => {
   };
 
   const deleteContratorByIDAPI = async (id: string) => {
-    closeDeleteModal();
-    setLoaderText("DELETING");
-    setApiDataLoad(true);
-    await delteContractorByIDAPI(id);
-    setLoaderText("LOADING_DATA");
-    await getContractorsFromAPI();
+    try {
+      closeDeleteModal();
+      setLoaderText("DELETING");
+      setApiDataLoad(true);
+      await delteContractorByIDAPI(id);
+      setLoaderText("LOADING_DATA");
+      await getContractorsFromAPI();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {

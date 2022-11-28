@@ -10,6 +10,4 @@ export const CONTRATORS_ALL_LABELS = {
   CONFIRM_DELETE_MODAL_BUTTON_CANCEL: "Anuluj",
   CONFIRM_DELETE_MODAL_BUTTON_CONFIRM: "Tak",
   CONFIRM_DELETE_MODAL_DELETE_ALL_INVOICES_TEXT: "Usuń wszystkie faktury powiązane z kontrahentem.",
-
-  
 };

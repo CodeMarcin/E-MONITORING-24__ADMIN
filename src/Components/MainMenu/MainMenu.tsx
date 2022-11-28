@@ -33,7 +33,6 @@ export const MainMenu = () => {
   };
 
   const setActiveMenuItemMobile = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent> | React.SyntheticEvent<SVGElement, MouseEvent>) => {
-    console.log("setActiveMenuItemMobil");
     e.stopPropagation();
     const eventTarget = e.target as HTMLDivElement;
     const parentElement = eventTarget.parentElement as HTMLDivElement;
