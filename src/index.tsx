@@ -8,6 +8,7 @@ import "./CSS/styles.css";
 import App from "./App";
 import { ContractorAddEdit } from "./Pages/Contrators/ContractorAddEdit/ContractorAddEdit";
 import { ContractorsAll } from "./Pages/Contrators/ContractorsAll/ContractorsAll";
+import { Settings } from "./Pages/Settings/Settings";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -24,6 +25,10 @@ const router = createBrowserRouter([
       {
         path: "/contractorEdit/:id",
         element: <ContractorAddEdit />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
       },
     ],
   },
