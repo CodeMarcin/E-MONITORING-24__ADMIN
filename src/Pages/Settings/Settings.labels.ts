@@ -1,3 +1,8 @@
+export const SETTINGS_LABELS = {
+  TITLE_COMPANY: "Firma",
+  TITLE_SITE: "Strona",
+};
+
 export const SETTINGS_HEADER_LABELS = {
   HEADER_TITLE: "Ustawienia",
 };
