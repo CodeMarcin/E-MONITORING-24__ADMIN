@@ -8,11 +8,12 @@
 
 .inputTextNumberPassword {
   border: none;
-  border-bottom: 2px solid var(--colorTwo);
+  border-bottom: 2px solid var(--colorOne);
   width: 100%;
   padding: 10px 25px;
   outline: none;
   color: var(--colorOne);
+  font-family: var(--fontBold);
 }
 
 .inputCheckbox {

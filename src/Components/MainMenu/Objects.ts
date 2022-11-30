@@ -58,7 +58,7 @@ export const MENU_ITEMS: IMainMenuItems[] = [
   {
     name: "settings",
     label: MAIN_MENU_LABELS.SETTINGS,
-    link: "http://wp.pl",
+    link: "/settings",
   },
   {
     name: "logout",

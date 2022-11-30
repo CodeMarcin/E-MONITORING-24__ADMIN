@@ -44,6 +44,8 @@ export const ADD_EDIT_CONTRATOR_INPUTS_PROPS: IInputProps[] = [
     name: "email",
     value: "",
     showName: true,
+    validateList: ["EMAIL_VALIDATE"],
+    errorList: [],
   },
   {
     label: CONTRATOR_ADD_EDIT_LABELS.NIP,

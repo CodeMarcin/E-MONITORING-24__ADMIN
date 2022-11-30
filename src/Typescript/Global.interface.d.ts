@@ -48,7 +48,7 @@ declare global {
   // @PROPS
   interface IHeaderProps {
     title: string;
-    subtitle: string;
+    subtitle?: string;
   }
 
   // ACCORDION COMPONENT
