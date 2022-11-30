@@ -8,16 +8,18 @@ export const InputTextNumberPassword = (props: { items: IInputProps; callbacks: 
   return (
     <>
       {showName && `${label}:`}
-      <input
-        className={styles["inputTextNumberPassword"]}
-        maxLength={maxLength}
-        minLength={minLength}
-        type={type}
-        placeholder={!showName ? label : ""}
-        name={name}
-        value={value}
-        onChange={onChangeCallback}
-      />
+      {(type === "text" || type === "password") && (
+        <input
+          className={styles["inputTextNumberPassword"]}
+          maxLength={maxLength}
+          minLength={minLength}
+          type={type}
+          placeholder={!showName ? label : ""}
+          name={name}
+          value={value}
+          onChange={onChangeCallback}
+        />
+      )}
     </>
   );
 };

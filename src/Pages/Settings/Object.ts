@@ -1,4 +1,4 @@
-import { SETTINGS_HEADER_LABELS, SETTINGS_COMPANY_LABELS, SETTINGS_SITE_LABELS } from "./Settings.labels";
+import { SETTINGS_HEADERS_LABELS, SETTINGS_COMPANY_LABELS, SETTINGS_SITE_LABELS } from "./Settings.labels";
 
 export const SETTINGS_COMPANY_INPUTS_PROPS: IInputProps[] = [
   {
@@ -44,6 +44,8 @@ export const SETTINGS_COMPANY_INPUTS_PROPS: IInputProps[] = [
     name: "email",
     value: "",
     showName: true,
+    validateList: ["IS_EMPTY", "EMAIL_VALIDATE"],
+    errorList: [],
   },
   {
     label: SETTINGS_COMPANY_LABELS.COMPANY_NIP,
@@ -51,7 +53,7 @@ export const SETTINGS_COMPANY_INPUTS_PROPS: IInputProps[] = [
     name: "nip",
     value: "",
     showName: true,
-    validateList: ["IS_NIP_EXIST", "IS_EMPTY", "NIP_VALIDATE"],
+    validateList: ["IS_EMPTY", "NIP_VALIDATE"],
     errorList: [],
     maxLength: 13,
   },
@@ -79,7 +81,8 @@ export const SETTINGS_COMPANY_INPUTS_PROPS: IInputProps[] = [
     name: "accountNumber",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    maxLength: 32,
+    validateList: ["IS_EMPTY", "ACCOUNT_NUMBER_VALIDATE"],
     errorList: [],
   },
   {
@@ -109,7 +112,7 @@ export const SETTINGS_SITE_INPUTS_PROPS: IInputProps[] = [
     name: "lastInvoiceNumber",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    validateList: ["IS_EMPTY", "IS_NUMERIC"],
     errorList: [],
   },
   {
@@ -118,7 +121,8 @@ export const SETTINGS_SITE_INPUTS_PROPS: IInputProps[] = [
     name: "lastInvoiceYear",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    maxLength: 4,
+    validateList: ["IS_EMPTY", "IS_NUMERIC"],
     errorList: [],
   },
   {
@@ -132,6 +136,12 @@ export const SETTINGS_SITE_INPUTS_PROPS: IInputProps[] = [
   },
 ];
 
-export const HEADER_PROPS: IHeaderProps = {
-  title: SETTINGS_HEADER_LABELS.HEADER_TITLE,
+export const HEADER_COMPANY_PROPS: IHeaderProps = {
+  title: SETTINGS_HEADERS_LABELS.HEADER_TITLE,
+  subtitle: SETTINGS_HEADERS_LABELS.HEADER_COMPANY_SUBTITLE
+};
+
+export const HEADER_SITE_PROPS: IHeaderProps = {
+  title: SETTINGS_HEADERS_LABELS.HEADER_TITLE,
+  subtitle: SETTINGS_HEADERS_LABELS.HEADER_SITE_SUBTITLE,
 };

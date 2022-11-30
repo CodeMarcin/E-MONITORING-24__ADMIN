@@ -13,6 +13,7 @@
   padding: 10px 25px;
   outline: none;
   color: var(--colorOne);
+  font-family: var(--fontBold);
 }
 
 .inputCheckbox {

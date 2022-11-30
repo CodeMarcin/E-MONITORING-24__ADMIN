@@ -10,7 +10,7 @@ import styles from "./MainMenu.module.css";
 type TCallbackDivElement = (e: React.SyntheticEvent<HTMLDivElement, MouseEvent>) => void;
 type TCallbackSVGElement = (e: React.SyntheticEvent<SVGElement, MouseEvent>) => void;
 type TCallbackHTMLElement = (e: React.SyntheticEvent<HTMLElement, MouseEvent>) => void;
-type TCallback = TCallbackDivElement & TCallbackSVGElement
+type TCallback = TCallbackDivElement & TCallbackSVGElement;
 
 export const MainMenuItemMobile = (props: { items: IMainMenuItems; toogleCallback: TCallback; clickCallback: TCallbackHTMLElement }) => {
   const { items, toogleCallback, clickCallback } = props;
@@ -32,5 +32,14 @@ export const MainMenuItemMobile = (props: { items: IMainMenuItems; toogleCallbac
           ))}
       </div>
     );
-  else return <a href={link}>{label}</a>;
+  else 
+    return (
+      <>
+        {link && (
+          <Link to={link} onClick={clickCallback}>
+            {label}
+          </Link>
+        )}
+      </>
+    );
 };

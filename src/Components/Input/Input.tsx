@@ -8,7 +8,7 @@ export const Input = (props: { items: IInputProps; callbacks: IInputCallbacks })
   const { type, errorList } = items;
   return (
     <label className={styles["label"]}>
-      {(type === "text" || type === "password") && <InputTextNumberPassword items={items} callbacks={callbacks} />}
+      {(type === "text" || type === "password" || type === "number") && <InputTextNumberPassword items={items} callbacks={callbacks} />}
       {type === "checkbox" && <InputCheckbox items={items} callbacks={callbacks} />}
       {errorList && (
         <div className={styles["input-error"]}>
