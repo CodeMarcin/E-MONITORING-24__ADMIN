@@ -2,13 +2,13 @@ import styles from "./Input.module.css";
 
 export const InputTextNumberPassword = (props: { items: IInputProps; callbacks: IInputCallbacks }) => {
   const { items, callbacks } = props;
-  const { type, label, name, showName, maxLength, minLength, value } = items;
+  const { type, label, name, showName, maxLength, minLength, value, step } = items;
   const { onChangeCallback } = callbacks;
 
   return (
     <>
       {showName && `${label}:`}
-      {(type === "text" || type === "password") && (
+      {(type === "text" || type === "password" || type === "number") && (
         <input
           className={styles["inputTextNumberPassword"]}
           maxLength={maxLength}
@@ -17,7 +17,8 @@ export const InputTextNumberPassword = (props: { items: IInputProps; callbacks: 
           placeholder={!showName ? label : ""}
           name={name}
           value={value}
-          onChange={onChangeCallback}
+          step={step}
+          onChange={(e: React.FormEvent<HTMLInputElement>) => onChangeCallback(e)}
         />
       )}
     </>

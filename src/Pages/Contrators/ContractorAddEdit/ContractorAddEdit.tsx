@@ -74,10 +74,6 @@ export const ContractorAddEdit = () => {
     setContractorFromAPI();
   }, [setContractorFromAPI]);
 
-  const inputCallbacks = {
-    onChangeCallback: changeValue,
-  };
-
   const ADD_BUTTON_PROPS: IButtonProps = {
     type: "BASIC",
     width: "FLEX",
@@ -163,7 +159,7 @@ export const ContractorAddEdit = () => {
         <Header items={!idFromURL ? HEADER_ADD_PROPS : HEADER_EDIT_PROPS} />
         <div className={useStyles("container--main", styles["container"])}>
           {inputsState.map((el) => (
-            <Input items={el} key={el.label} callbacks={inputCallbacks} />
+            <Input items={el} key={el.label} callbacks={{ onChangeCallback: changeValue }} />
           ))}
           <Button items={!idFromURL ? ADD_BUTTON_PROPS : EDIT_BUTTON_PROPS} />
         </div>

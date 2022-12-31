@@ -25,15 +25,11 @@ export const TopSection = () => {
     });
   };
 
-  const callbacks = {
-    onChangeCallback: changeValue,
-  };
-
   return (
     <div className={useStyles("container--full-width", styles["top-section"])}>
       <div className={styles["top-section__container"]}>
         <MainMenu />
-        <Input items={inputsState} callbacks={callbacks} />
+        <Input items={inputsState} callbacks={{ onChangeCallback: changeValue }} />
       </div>
     </div>
   );

@@ -103,7 +103,7 @@ export const SETTINGS_SITE_INPUTS_PROPS: IInputProps[] = [
     name: "accountantEmail",
     value: "",
     showName: true,
-    validateList: ["IS_EMPTY"],
+    validateList: ["IS_EMPTY", "EMAIL_VALIDATE"],
     errorList: [],
   },
   {

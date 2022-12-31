@@ -33,7 +33,7 @@ export const MENU_ITEMS: IMainMenuItems[] = [
       {
         name: "invoiceAdd",
         label: MAIN_MENU_LABELS.INVOICES_ADD,
-        link: "link",
+        link: '/invoiceAdd',
       },
     ],
   },
