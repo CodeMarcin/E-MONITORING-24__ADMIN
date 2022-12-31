@@ -8,6 +8,7 @@ import "./CSS/styles.css";
 import App from "./App";
 import { ContractorAddEdit } from "./Pages/Contrators/ContractorAddEdit/ContractorAddEdit";
 import { ContractorsAll } from "./Pages/Contrators/ContractorsAll/ContractorsAll";
+import { InvoiceAdd } from "./Pages/Invoices/InvoiceAdd/InvoiceAdd";
 import { Settings } from "./Pages/Settings/Settings";
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
       {
         path: "/contractorEdit/:id",
         element: <ContractorAddEdit />,
+      },
+      {
+        path: "/invoiceAdd",
+        element: <InvoiceAdd />
       },
       {
         path: "/settings",

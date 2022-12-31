@@ -123,7 +123,6 @@ export const useValidateInputs = async (stateInput: IInputProps) => {
         if (el === "NIP_VALIDATE") validateNipIsValid();
         if (el === "EMAIL_VALIDATE") validateEmailAdressValid();
         if (el === "ACCOUNT_NUMBER_VALIDATE") validateAccountNumberValid();
-
         return input;
       })
     );

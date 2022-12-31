@@ -24,6 +24,7 @@ declare global {
     showName: boolean;
     minLength?: number;
     maxLength?: number;
+    step?: number;
     validateList?: TValidataList[];
     errorList?: string[];
   }
@@ -99,5 +100,51 @@ declare global {
     sortBy: string;
     sortType: "desc" | "asc";
     limit: number;
+  }
+
+  // LOCAL STORAGE INVOICE ADD
+  export interface ILocalStorageInvoiceAdd {
+    step: number;
+    selectedContractorID: string;
+    selectedPaymentMethod: string;
+    contractor: IInputProps[];
+    company: IInputProps[];
+    invoiceSettings: IInputProps[];
+    paymentSettings: IInputProps[];
+  }
+
+  // SELECT
+  export interface ISelect {
+    name: string;
+    values: ISelectValues[];
+  }
+
+  export interface ISelectValues {
+    value?: string | number;
+    label: string;
+  }
+
+  // INVOICE ADD
+  export interface IInvoiceAddSettings {
+    contractors: IContractorAPI[];
+    paymentSettings: IPaymentAPI;
+    dataForSelectContractor: ISelect;
+    dataForSelectPayment: ISelect;
+    dataForSelectItems :ISelect;
+    selectedContractor: string;
+    selectedPaymentMethod: string;
+  }
+  
+  export interface IInvoiceAdd {
+    contractor: IInputProps[];
+    company: IInputProps[];
+    invoiceSettings: IInputProps[];
+    paymentSettings: IInputProps[];
+    items: IItem[];
+  }
+
+  export interface IItem {
+    standard: string;
+    item: IInputProps[];
   }
 }

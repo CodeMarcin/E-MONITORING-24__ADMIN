@@ -1,7 +1,7 @@
 import { http } from "./Http-common";
 
 export const getAllContractorsAPI = (sortBy: string, sortType: string, limit: number) => {
-  return http.get(`contractors/getAllContractors/${sortBy}/${sortType}/${limit}`);
+  return http.get<IContractorAPI[]>(`contractors/getAllContractors/${sortBy}/${sortType}/${limit}`);
 };
 
 export const findContractorByNIPAPI = (nip: string, limit: number) => {

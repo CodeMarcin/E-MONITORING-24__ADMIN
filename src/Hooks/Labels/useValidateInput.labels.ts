@@ -5,5 +5,5 @@ export const USE_VALIDATE_INPUT_LABELS = {
   ZIP_CODE_VALIDATE: "Błędny kod pocztowy - wpisz 5 liczb.",
   NIP_EXIST: "Podany NIP istnieje w bazie danych.",
   EMAIL_VALIDATE: "Błędny adres email.",
-  ACCOUNT_NUMBER_VALIDATE: "Błędny numer konta - wpisz 26 liczb."
+  ACCOUNT_NUMBER_VALIDATE: "Błędny numer konta - wpisz 26 liczb.",
 };
