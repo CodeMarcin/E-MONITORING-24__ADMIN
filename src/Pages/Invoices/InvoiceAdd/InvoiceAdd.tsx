@@ -23,6 +23,8 @@ import { useCreateCalendarPaymentDate } from "../../../Hooks/useCreateCalendarPa
 import { getAllContractorsAPI } from "../../../Api/Contractors";
 import { getCompanyAPI, getInvoiceSettingsAPI, getPaymentSettingsAPI } from "../../../Api/Company";
 
+import { cloneDeep } from "lodash";
+
 import { HEADER_INVOICE_ADD_PROPS, DEFAUL_INVOICE_DATA, DEFAULT_SETTINGS } from "./Objects";
 import {
   GLOBAL_OBJECT_CONTRACTOR,
@@ -97,20 +99,26 @@ export const InvoiceAdd = () => {
 
         setInvoiceData((prevState) => ({
           ...prevState,
-          items: [
-            ...prevState.items.map((el, idx) => {
-              if (idx === index) {
-                el.item.map((item) => {
-                  if (item.name === targetName) item.value = newValue ?? targetValue;
-                  return { ...item };
-                });
-              }
-              return { ...el };
-            }),
-          ],
+          items: prevState.items.map((el, idx) => {
+            if (idx === index) {
+              return {
+                ...el,
+                item: [
+                  ...prevState.items[idx].item.map((item) => {
+                    if (item.name === targetName) return { ...item, value: newValue ?? targetValue };
+                    return { ...item };
+                  }),
+                ],
+              };
+            }
+            return { ...el };
+          }),
         }));
+
+        console.log(GLOBAL_OBJECT_ITEMS[0].errorList === invoiceData.items[0].item[0].errorList, " FIRST");
       }
     }
+    console.log(invoiceData, "idata");
   };
 
   const checkValues = async (stateSubName: stateSubName) => {
@@ -133,8 +141,10 @@ export const InvoiceAdd = () => {
       } else if (stateSubName === "items") {
         console.log(invoiceData.items);
         if (invoiceData?.items) {
-          await Promise.all(
-            invoiceData?.items.map(async (el) => {
+          const items = useCloneArray(invoiceData.items);
+
+          const itemsAfterCheck = await Promise.all(
+            items.map(async (el: IItem) => {
               return await Promise.all(
                 el.item.map(async (item) => {
                   if (item.validateList) await useValidateInputs(item);
@@ -146,7 +156,6 @@ export const InvoiceAdd = () => {
 
           const checkResultArray = [...invoiceData.items.map((el) => !el.item.some((item) => !!item.errorList?.length))];
           const checkResult = checkResultArray.every((el) => el);
-
           return checkResult;
         }
       }
@@ -174,7 +183,7 @@ export const InvoiceAdd = () => {
     else if (step === 4) placeTitle = INVOICE_ADD_LABELS.SETTINGS_PAYMANT;
     else if (step === 5) placeTitle = INVOICE_ADD_LABELS.SETTINGS_SERVICES_GOODS;
     else placeTitle = "";
-    return stepTitle + placeTitle;
+    return `${stepTitle} ${placeTitle}`;
   };
 
   const getBottomPanelButtons = (): IButtonProps[] => {
@@ -207,7 +216,9 @@ export const InvoiceAdd = () => {
   };
 
   const addItem = () => {
-    setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", item: GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el })) }] }));
+    console.log(GLOBAL_OBJECT_ITEMS, "ITEM I NADD ITEM");
+    // setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", item: [...GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el }))] }] }));
+    setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
   };
 
   const removeItem = (e: React.FormEvent<HTMLDivElement>) => {
@@ -346,8 +357,8 @@ export const InvoiceAdd = () => {
     }));
   };
 
-
   const createItemsData = () => {
+    console.log("odpalilem create items data");
     if (!invoiceData.items.length) {
       const dataForSelectItem: ISelect = {
         name: "standard",
@@ -358,7 +369,8 @@ export const InvoiceAdd = () => {
       };
       setSelectedData((prevState) => ({ ...prevState, dataForSelectItems: { ...dataForSelectItem } }));
 
-      setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", item: [...GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el }))] }] }));
+      // setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", item: [...GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el }))] }] }));
+      setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
     }
   };
 
@@ -390,7 +402,7 @@ export const InvoiceAdd = () => {
     else if (step === 3) createInvoiceSettingsData();
     else if (step === 4) createPaymentSettingsData();
     else if (step === 5) createItemsData();
-  }, [step, createSelectContractorData, createCompanyData, createInvoiceSettingsData, createPaymentSettingsData]);
+  }, [step]);
 
   return (
     <>
