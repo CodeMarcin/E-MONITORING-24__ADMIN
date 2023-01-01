@@ -26,6 +26,14 @@ export const useValidateInputs = async (stateInput: IInputProps) => {
     else if (input.value.length === 0 && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC) !== -1) removeError(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC);
   };
 
+  const validateIsPrice = () => {
+    if (input.value.length !== 0 && !checkIsPriceValid() && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC) === -1)
+      addError(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC);
+    else if (input.value.length !== 0 && checkIsPriceValid() && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC) !== -1)
+      removeError(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC);
+    else if (input.value.length === 0 && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC) !== -1) removeError(USE_VALIDATE_INPUT_LABELS.IS_NUMERIC);
+  };
+
   const validateNipIsValid = () => {
     if (input.value.length !== 0 && (input.value.length !== 13 || !checkNipIsValid()) && input.errorList?.indexOf(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE) === -1)
       addError(USE_VALIDATE_INPUT_LABELS.NIP_VALIDATE);
@@ -113,12 +121,23 @@ export const useValidateInputs = async (stateInput: IInputProps) => {
     return validation;
   };
 
+  const checkIsPriceValid = () => {
+    let validation = true;
+    for (let i = 0; i < input.value.length; i++) {
+      if (input.value[i] === "0" || input.value[i] === "." || input.value[i] === ",") validation = true;
+      else validation = !!parseInt(input.value[i]);
+      if (!validation) return validation;
+    }
+    return validation;
+  };
+
   if (input.validateList) {
     return Promise.all(
       input.validateList?.map(async (el) => {
         if (el === "IS_NIP_EXIST") await checkIsNIPExistInDataBase();
         if (el === "IS_EMPTY") validateIsEmpty();
         if (el === "IS_NUMERIC") validateIsNumeric();
+        if (el === "IS_PRICE") validateIsPrice();
         if (el === "ZIP_CODE_VALIDATE") validateZipCodeValid();
         if (el === "NIP_VALIDATE") validateNipIsValid();
         if (el === "EMAIL_VALIDATE") validateEmailAdressValid();

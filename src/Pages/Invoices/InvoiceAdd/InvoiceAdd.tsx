@@ -95,9 +95,10 @@ export const InvoiceAdd = () => {
           }),
         }));
       } else if (stateSubName === "items") {
-        if (targetName === "quantity" || targetName === "price") {
-          if (parseInt(targetValue) < 0) newValue = "1";
-        }
+        if ((targetName === "quantity" || targetName === "price") && parseInt(targetValue) < 0) newValue = "1";
+        if (targetName === "quantity" && (targetValue[targetValue.length - 1] === "." || targetValue[targetValue.length - 1] === ","))
+          newValue = `${targetValue.slice(0, -1)}`;
+        if (targetName === "price" && targetValue[targetValue.length - 1] === ",") newValue = `${targetValue.slice(0, -1)}.`;
 
         setInvoiceData((prevState) => ({
           ...prevState,
@@ -119,7 +120,6 @@ export const InvoiceAdd = () => {
             return { ...el };
           }),
         }));
-        console.log(invoiceData, "invoice data");
         if (targetName === "quantity" || targetName === "price") {
           setInvoiceData((prevState) => ({ ...prevState, totalValue: createTotalValue(targetName, newValue ?? targetValue, index!) }));
         }
@@ -133,17 +133,16 @@ export const InvoiceAdd = () => {
     invoiceData.items
       .filter((el, idx) => index !== idx)
       .forEach((el) => {
-        totalValue += el.totalPrice;
+        if (el.totalPrice) totalValue += el.totalPrice;
       });
+    // TO DO prevent to display NaN if input is string
+    const secondValue =
+      targetName === "quantity"
+        ? invoiceData.items[index].item.find((el) => el.name === "price")!.value ?? 0
+        : invoiceData.items[index].item.find((el) => el.name === "quantity")!.value ?? 0;
 
-    const valueBeforeSetStateUpdate =
-      parseFloat(targetValue) *
-      parseFloat(
-        targetName === "quantity"
-          ? invoiceData.items[index].item.find((el) => el.name === "price")!.value
-          : invoiceData.items[index].item.find((el) => el.name === "quantity")!.value
-      );
-    totalValue += valueBeforeSetStateUpdate;
+    if (targetValue) totalValue += parseFloat(targetValue) * parseFloat(secondValue);
+
     return totalValue;
   };
 
@@ -220,6 +219,7 @@ export const InvoiceAdd = () => {
       setStep((prevState) => prevState + 1);
     } else if (site === "PREVIOUS") {
       setStep((prevState) => prevState - 1);
+      // TO DO Clean Error list on change step to PREVIOUS
     }
   };
 
@@ -408,7 +408,6 @@ export const InvoiceAdd = () => {
   };
 
   const createItemsData = () => {
-    console.log("odpalilem create items data");
     if (!invoiceData.items.length) {
       const dataForSelectItem: ISelect = {
         name: "standard",
