@@ -220,7 +220,7 @@ export const GLOBAL_OBJECT_ITEMS: IInputProps[] = [
   },
   {
     label: ITEM_LABELS.ITEM_QUANTITY,
-    type: "number",
+    type: "text",
     name: "quantity",
     value: "1",
     showName: true,
@@ -230,11 +230,11 @@ export const GLOBAL_OBJECT_ITEMS: IInputProps[] = [
   },
   {
     label: ITEM_LABELS.ITEM_PRICE,
-    type: "number",
+    type: "text",
     name: "price",
     value: "1",
     showName: true,
-    validateList: ["IS_EMPTY", "IS_NUMERIC"],
+    validateList: ["IS_EMPTY", "IS_PRICE"],
     errorList: [],
   },
 ];
