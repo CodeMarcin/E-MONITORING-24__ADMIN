@@ -19,6 +19,7 @@ import { useFromatAccountNumber } from "../../../Hooks/useFormatAccountNumber";
 import { useValidateInputs } from "../../../Hooks/useValidateInput";
 import { useCreateCalendarFormatDate } from "../../../Hooks/useCreateCalendarFormatDate";
 import { useCreateCalendarPaymentDate } from "../../../Hooks/useCreateCalendarPaymentDate";
+import { useCreateTotalValue } from "../../../Hooks/useCreateTotalValue";
 
 import { getAllContractorsAPI } from "../../../Api/Contractors";
 import { getCompanyAPI, getInvoiceSettingsAPI, getPaymentSettingsAPI } from "../../../Api/Company";
@@ -71,6 +72,7 @@ export const InvoiceAdd = () => {
   const changeValue = (e: React.FormEvent<HTMLInputElement>, stateSubName: stateSubName, index?: number) => {
     const targetValue = (e.target as HTMLInputElement).value;
     const targetName = (e.target as HTMLInputElement).name;
+
     if (invoiceData) {
       let newValue: string;
       if (stateSubName !== "items") {
@@ -103,6 +105,9 @@ export const InvoiceAdd = () => {
             if (idx === index) {
               return {
                 ...el,
+                totalPrice:
+                  parseFloat(newValue ?? targetValue) *
+                  parseFloat(targetName === "quantity" ? el.item.find((el) => el.name === "price")!.value : el.item.find((el) => el.name === "quantity")!.value),
                 item: [
                   ...prevState.items[idx].item.map((item) => {
                     if (item.name === targetName) return { ...item, value: newValue ?? targetValue };
@@ -114,11 +119,40 @@ export const InvoiceAdd = () => {
             return { ...el };
           }),
         }));
-
-        console.log(GLOBAL_OBJECT_ITEMS[0].errorList === invoiceData.items[0].item[0].errorList, " FIRST");
+        console.log(invoiceData, "invoice data");
+        if (targetName === "quantity" || targetName === "price") {
+          setInvoiceData((prevState) => ({ ...prevState, totalValue: createTotalValue(targetName, newValue ?? targetValue, index!) }));
+        }
       }
     }
-    console.log(invoiceData, "idata");
+  };
+
+  const createTotalValue = (targetName: string, targetValue: string, index: number) => {
+    let totalValue: number = 0;
+
+    invoiceData.items
+      .filter((el, idx) => index !== idx)
+      .forEach((el) => {
+        totalValue += el.totalPrice;
+      });
+
+    const valueBeforeSetStateUpdate =
+      parseFloat(targetValue) *
+      parseFloat(
+        targetName === "quantity"
+          ? invoiceData.items[index].item.find((el) => el.name === "price")!.value
+          : invoiceData.items[index].item.find((el) => el.name === "quantity")!.value
+      );
+    totalValue += valueBeforeSetStateUpdate;
+    return totalValue;
+  };
+
+  const addTotalValue = () => {
+    setInvoiceData((prevState) => ({ ...prevState, totalValue: prevState.totalValue + 1 }));
+  };
+
+  const subtractTotalValue = (itemIndexToRemove: number) => {
+    setInvoiceData((prevState) => ({ ...prevState, totalValue: prevState.totalValue - prevState.items[itemIndexToRemove].totalPrice }));
   };
 
   const checkValues = async (stateSubName: stateSubName) => {
@@ -127,24 +161,30 @@ export const InvoiceAdd = () => {
       setApiDataLoad(true);
       if (stateSubName !== "items") {
         if (invoiceData?.[stateSubName]) {
-          await Promise.all(
-            invoiceData?.[stateSubName].map(async (el) => {
+          const valuesFromInvoiceData = cloneDeep(invoiceData?.[stateSubName]);
+
+          const valuesAfterCheck = await Promise.all(
+            valuesFromInvoiceData.map(async (el) => {
               if (el.validateList) await useValidateInputs(el);
               return el;
             })
           );
 
-          const checkResult = !invoiceData[stateSubName].filter((el) => el.errorList).some((el) => !!el.errorList?.length);
+          setInvoiceData((prevState) => ({
+            ...prevState,
+            [stateSubName]: cloneDeep(valuesAfterCheck),
+          }));
+
+          const checkResult = !valuesAfterCheck.filter((el) => el.errorList).some((el) => !!el.errorList?.length);
 
           return checkResult;
         }
       } else if (stateSubName === "items") {
-        console.log(invoiceData.items);
         if (invoiceData?.items) {
-          const items = useCloneArray(invoiceData.items);
+          const items = cloneDeep(invoiceData.items);
 
           const itemsAfterCheck = await Promise.all(
-            items.map(async (el: IItem) => {
+            items.map(async (el) => {
               return await Promise.all(
                 el.item.map(async (item) => {
                   if (item.validateList) await useValidateInputs(item);
@@ -154,8 +194,17 @@ export const InvoiceAdd = () => {
             })
           );
 
-          const checkResultArray = [...invoiceData.items.map((el) => !el.item.some((item) => !!item.errorList?.length))];
+          setInvoiceData((prevState) => ({
+            ...prevState,
+            items: prevState.items.map((el, index) => ({
+              ...el,
+              item: [...itemsAfterCheck[index]],
+            })),
+          }));
+
+          const checkResultArray = [...itemsAfterCheck.map((el) => !el.some((item) => !!item.errorList?.length))];
           const checkResult = checkResultArray.every((el) => el);
+
           return checkResult;
         }
       }
@@ -209,16 +258,16 @@ export const InvoiceAdd = () => {
         },
       },
     };
-
-    if (step === 1) return [buttonNext];
-    else if (step >= 2 || step <= 4) return [buttonPrevious, buttonNext];
-    else return [];
+    if (!subApiDataLoad) {
+      if (step === 1) return [buttonNext];
+      else if (step >= 2 || step <= 4) return [buttonPrevious, buttonNext];
+      else return [];
+    } else return [];
   };
 
   const addItem = () => {
-    console.log(GLOBAL_OBJECT_ITEMS, "ITEM I NADD ITEM");
-    // setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", item: [...GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el }))] }] }));
-    setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
+    setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items, { standard: "piece", totalPrice: 1, item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
+    addTotalValue();
   };
 
   const removeItem = (e: React.FormEvent<HTMLDivElement>) => {
@@ -226,6 +275,7 @@ export const InvoiceAdd = () => {
     const parentNode = target.parentNode!;
     const indexToRemove = parseInt(target.dataset.id!) || parseInt((parentNode as HTMLElement).dataset.id!);
 
+    subtractTotalValue(indexToRemove);
     setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items.filter((el, index) => index !== indexToRemove)] }));
   };
 
@@ -369,8 +419,7 @@ export const InvoiceAdd = () => {
       };
       setSelectedData((prevState) => ({ ...prevState, dataForSelectItems: { ...dataForSelectItem } }));
 
-      // setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", item: [...GLOBAL_OBJECT_ITEMS.map((el) => ({ ...el }))] }] }));
-      setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
+      setInvoiceData((prevState) => ({ ...prevState, items: [{ standard: "piece", totalPrice: 1, item: cloneDeep(GLOBAL_OBJECT_ITEMS) }] }));
     }
   };
 
@@ -395,8 +444,6 @@ export const InvoiceAdd = () => {
   }, [invoiceData.paymentSettings, invoiceData.invoiceSettings]);
 
   useEffect(() => {
-    // console.log(selectedData, "SELECTED DATA from use effect");
-    // console.log(invoiceData, "INVOICE DATA from use effect");
     if (step === 1) createSelectContractorData();
     else if (step === 2) createCompanyData();
     else if (step === 3) createInvoiceSettingsData();
@@ -452,6 +499,10 @@ export const InvoiceAdd = () => {
                   key={index}
                 />
               ))}
+              <div className={styles["total-value"]}>
+                <span>{INVOICE_ADD_LABELS.TOTAL_VALUE}</span> <span>{useCreateTotalValue(invoiceData.totalValue)}</span>
+              </div>
+
               <Button items={ADD_ITEM_BUTTON} />
             </>
           )}
