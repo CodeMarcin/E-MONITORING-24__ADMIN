@@ -141,10 +141,12 @@ declare global {
     invoiceSettings: IInputProps[];
     paymentSettings: IInputProps[];
     items: IItem[];
+    totalValue: number;
   }
 
   export interface IItem {
     standard: string;
+    totalPrice: number;
     item: IInputProps[];
   }
 }

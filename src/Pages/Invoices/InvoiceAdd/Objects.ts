@@ -17,6 +17,7 @@ export const DEFAULT_SETTINGS: IInvoiceAddSettings = {
 
 export const DEFAULT_ITEM_DATA: IItem = {
   standard: "piece",
+  totalPrice: 1,
   item: [],
 };
 
@@ -26,4 +27,5 @@ export const DEFAUL_INVOICE_DATA: IInvoiceAdd = {
   invoiceSettings: [],
   paymentSettings: [],
   items: [],
+  totalValue: 1,
 };

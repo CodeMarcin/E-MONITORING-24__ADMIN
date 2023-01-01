@@ -132,7 +132,7 @@ export const SVGDeleteIcon = ({ size = 48, color = "#000", dataId, clickCallback
       height={size}
       viewBox={viewBox}
       stroke={color}
-      strokeWidth="2"
+      strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
       fill="none"
