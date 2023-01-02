@@ -11,6 +11,7 @@ import { CompanySettings } from "../../../Components/Panels/CompanySettings";
 import { InvoiceSettings } from "../../../Components/Panels/InvoiceSettings";
 import { PaymentSettings } from "../../../Components/Panels/PaymentSettings";
 import { Item } from "../../../Components/Panels/Item";
+import { InvoiceDisplayWrapper } from "../../../Components/Panels/InvoiceDisplayWrapper";
 
 import { useStyles } from "../../../Hooks/useStyles";
 import { useFormatNIP } from "../../../Hooks/useFormatNIP";
@@ -224,13 +225,14 @@ export const InvoiceAdd = () => {
   };
 
   const getTitle = () => {
-    let stepTitle = `${INVOICE_ADD_LABELS.STEP} ${step}/5 - `;
+    let stepTitle = `${INVOICE_ADD_LABELS.STEP} ${step}/6 - `;
     let placeTitle: string;
     if (step === 1) placeTitle = INVOICE_ADD_LABELS.SELECT_CONTRACTOR;
     else if (step === 2) placeTitle = INVOICE_ADD_LABELS.SETTINGS_COMPANY;
     else if (step === 3) placeTitle = INVOICE_ADD_LABELS.SETTINGS_INVOICE;
     else if (step === 4) placeTitle = INVOICE_ADD_LABELS.SETTINGS_PAYMANT;
     else if (step === 5) placeTitle = INVOICE_ADD_LABELS.SETTINGS_SERVICES_GOODS;
+    else if (step === 6) placeTitle = INVOICE_ADD_LABELS.SETTINGS_PREVIEW;
     else placeTitle = "";
     return `${stepTitle} ${placeTitle}`;
   };
@@ -505,6 +507,7 @@ export const InvoiceAdd = () => {
               <Button items={ADD_ITEM_BUTTON} />
             </>
           )}
+          {step === 6 && invoiceData && <InvoiceDisplayWrapper invoiceData={invoiceData} dateOfPayment={dateOfPayment!} />}
         </div>
       </div>
     </>
