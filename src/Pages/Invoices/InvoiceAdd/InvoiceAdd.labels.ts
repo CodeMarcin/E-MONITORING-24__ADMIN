@@ -12,11 +12,12 @@ export const INVOICE_ADD_LABELS = {
   SETTINGS_INVOICE: "Faktura",
   SETTINGS_PAYMANT: "Płatność",
   SETTINGS_SERVICES_GOODS: "Usługi, towary",
+  SETTINGS_PREVIEW: "Podgląd",
   PAYMENT_METHOD_TRANSFERS: "Przelew",
   PAYMENT_METHOD_CASH: "Gotówka",
   ITEMS_STANDARD_METERS: "Metr",
   ITEMS_STANDARD_PIECE: "Sztuka",
-  TOTAL_VALUE: "Wartość razem:"
+  TOTAL_VALUE: "Wartość razem:",
 };
 
 export const INVOICE_ADD_BUTTON_ADD_ITEM_LABELS = {
