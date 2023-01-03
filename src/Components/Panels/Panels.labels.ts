@@ -33,4 +33,5 @@ export const DISPLAY_LABELS = {
   DISPLAY_AMOUNT_IN_WORDS: "Kwota należności słownie",
   DISPLAY_STANDARD_PIECE: "Sztuk",
   DISPLAY_STANDARD_METER: "Metr",
+  DISPLAY_BOTTOM_TEXT: "SPRZEDAWCA ZWOLNIONY PODMIOTOWO Z PODATKU OD TOWARÓW I USŁUG [dostawa towarów lub świadczenie usług zwolnione na podstawie art 113 ust. 1 (albo ust. 9) ustawy z dnia 11 marca 2004 r. o podatku od towarów i usług ( Dz.U. z 2016 r. poz. 710 z późn. zm. )]"
 };

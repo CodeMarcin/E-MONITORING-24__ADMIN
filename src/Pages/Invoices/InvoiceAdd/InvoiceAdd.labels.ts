@@ -6,6 +6,7 @@ export const INVOICE_ADD_HEADER_LABELS = {
 export const INVOICE_ADD_LABELS = {
   BACK: "Wstecz",
   NEXT: "Dalej",
+  SAVE: "Zapisz",
   STEP: "Krok",
   SELECT_CONTRACTOR: "Kontrahent",
   SETTINGS_COMPANY: "Twoja firma",

@@ -6,6 +6,9 @@ import { useCreateTotalValue } from "../../Hooks/useCreateTotalValue";
 import { usePriceToWords } from "../../Hooks/usePriceToWords";
 import { useFirstLetterUppercase } from "../../Hooks/useFirstLetterToUpperCase";
 
+import { SVGPhone } from "../../Utilities/SVG";
+import { SVGMail } from "../../Utilities/SVG";
+
 import { DISPLAY_LABELS } from "./Panels.labels";
 
 import styles from "./Panels.module.css";
@@ -175,6 +178,24 @@ export const InvoiceDisplay = (props: { invoiceData: IInvoiceAdd; dateOfPayment:
         <div className={styles["total-price"]}>
           <span className={"text--weight-700"}>{DISPLAY_LABELS.DISPLAY_AMOUNT_IN_WORDS}:&nbsp; </span>
           <span className="text--weight-600">{useFirstLetterUppercase(usePriceToWords(invoiceData.totalValue).toLocaleLowerCase())}</span>
+        </div>
+        <div className={styles["invoice-pdf__footer"]}>
+          <div className={styles["footer-items"]}>
+            <div className={styles["footer-item"]}>
+              <span>
+                <SVGPhone />
+              </span>
+              <span>{invoiceData.company[6].value}</span>
+            </div>
+            <div className={styles["footer-item"]}>
+              <span>
+                <SVGMail />
+              </span>
+              <span>{invoiceData.company[4].value}</span>
+            </div>
+            <div className={styles["footer-item"]}>{invoiceData.company[7].value}</div>
+          </div>
+          <div className="text--weight-700 text--end">{DISPLAY_LABELS.DISPLAY_BOTTOM_TEXT}</div>
         </div>
       </div>
     </div>
