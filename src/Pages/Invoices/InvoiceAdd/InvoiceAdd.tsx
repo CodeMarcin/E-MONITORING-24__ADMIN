@@ -1,5 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 
 import { Header } from "../../../Components/Header/Header";
 import { Loader } from "../../../Components/Loader/Loader";
@@ -24,8 +25,9 @@ import { useCreateTotalValue } from "../../../Hooks/useCreateTotalValue";
 
 import { getAllContractorsAPI } from "../../../Api/Contractors";
 import { getCompanyAPI, getInvoiceSettingsAPI, getPaymentSettingsAPI } from "../../../Api/Company";
+import { addInvoiceAPI } from "../../../Api/Invoices";
 
-import { cloneDeep } from "lodash";
+import { cloneDeep, isEqual } from "lodash";
 
 import { HEADER_INVOICE_ADD_PROPS, DEFAUL_INVOICE_DATA, DEFAULT_SETTINGS } from "./Objects";
 import {
@@ -61,6 +63,8 @@ export const InvoiceAdd = () => {
   const [selectedData, setSelectedData] = useState<IInvoiceAddSettings>(DEFAULT_SETTINGS);
   const [loaderText, setLoaderText] = useState<TLoaderType>("LOADING_DATA");
 
+  const navigate = useNavigate();
+
   const ADD_ITEM_BUTTON: IButtonProps = {
     type: "SECOND",
     value: INVOICE_ADD_BUTTON_ADD_ITEM_LABELS.ADD,
@@ -75,8 +79,8 @@ export const InvoiceAdd = () => {
     const targetName = (e.target as HTMLInputElement).name;
 
     if (invoiceData) {
-      let newValue: string;
       if (stateSubName !== "items") {
+        let newValue: string;
         const itemIndexToChange = invoiceData[stateSubName].findIndex((el) => el.name === targetName);
         if (targetName === "nip" && invoiceData[stateSubName][itemIndexToChange].value) {
           newValue = useFormatNIP(targetValue, invoiceData[stateSubName][itemIndexToChange].value.length);
@@ -96,11 +100,11 @@ export const InvoiceAdd = () => {
           }),
         }));
       } else if (stateSubName === "items") {
+        let newValue: string;
         if ((targetName === "quantity" || targetName === "price") && parseInt(targetValue) < 0) newValue = "1";
         if (targetName === "quantity" && (targetValue[targetValue.length - 1] === "." || targetValue[targetValue.length - 1] === ","))
           newValue = `${targetValue.slice(0, -1)}`;
         if (targetName === "price" && targetValue[targetValue.length - 1] === ",") newValue = `${targetValue.slice(0, -1)}.`;
-
         setInvoiceData((prevState) => ({
           ...prevState,
           items: prevState.items.map((el, idx) => {
@@ -108,8 +112,10 @@ export const InvoiceAdd = () => {
               return {
                 ...el,
                 totalPrice:
-                  parseFloat(newValue ?? targetValue) *
-                  parseFloat(targetName === "quantity" ? el.item.find((el) => el.name === "price")!.value : el.item.find((el) => el.name === "quantity")!.value),
+                  targetName === "quantity" || targetName === "price"
+                    ? parseFloat(newValue ?? targetValue) *
+                      parseFloat(targetName === "quantity" ? el.item.find((el) => el.name === "price")!.value : el.item.find((el) => el.name === "quantity")!.value)
+                    : prevState.items[idx].totalPrice,
                 item: [
                   ...prevState.items[idx].item.map((item) => {
                     if (item.name === targetName) return { ...item, value: newValue ?? targetValue };
@@ -120,10 +126,8 @@ export const InvoiceAdd = () => {
             }
             return { ...el };
           }),
+          totalValue: targetName === "quantity" || targetName === "price" ? createTotalValue(targetName, newValue ?? targetValue, index!) : prevState.totalValue,
         }));
-        if (targetName === "quantity" || targetName === "price") {
-          setInvoiceData((prevState) => ({ ...prevState, totalValue: createTotalValue(targetName, newValue ?? targetValue, index!) }));
-        }
       }
     }
   };
@@ -142,7 +146,7 @@ export const InvoiceAdd = () => {
         ? invoiceData.items[index].item.find((el) => el.name === "price")!.value ?? 0
         : invoiceData.items[index].item.find((el) => el.name === "quantity")!.value ?? 0;
 
-    if (targetValue) totalValue += parseFloat(targetValue) * parseFloat(secondValue);
+    totalValue += parseFloat(targetValue) * parseFloat(secondValue);
 
     return totalValue;
   };
@@ -196,15 +200,16 @@ export const InvoiceAdd = () => {
 
           setInvoiceData((prevState) => ({
             ...prevState,
-            items: prevState.items.map((el, index) => ({
-              ...el,
-              item: [...itemsAfterCheck[index]],
-            })),
+            items: prevState.items.map((el, index) => {
+              return {
+                ...el,
+                item: [...itemsAfterCheck[index]],
+              };
+            }),
           }));
 
           const checkResultArray = [...itemsAfterCheck.map((el) => !el.some((item) => !!item.errorList?.length))];
           const checkResult = checkResultArray.every((el) => el);
-
           return checkResult;
         }
       }
@@ -260,10 +265,23 @@ export const InvoiceAdd = () => {
         },
       },
     };
+
+    const buttonSave: IButtonProps = {
+      type: "BASIC",
+      width: "FLEX",
+      value: INVOICE_ADD_LABELS.SAVE,
+      callbacks: {
+        onClickCallback: () => {
+          saveInvoice();
+        },
+      },
+    };
+
     if (!subApiDataLoad) {
       if (step === 1) return [buttonNext];
-      else if (step >= 2 || step <= 4) return [buttonPrevious, buttonNext];
-      else return [];
+      else if (step >= 2 && step <= 5) return [buttonPrevious, buttonNext];
+      else if (step === 6) return [buttonPrevious, buttonSave];
+      return [];
     } else return [];
   };
 
@@ -279,6 +297,86 @@ export const InvoiceAdd = () => {
 
     subtractTotalValue(indexToRemove);
     setInvoiceData((prevState) => ({ ...prevState, items: [...prevState.items.filter((el, index) => index !== indexToRemove)] }));
+  };
+
+  const saveInvoice = async () => {
+    const parseData = (): IInvoiceAddDataToSendAPI => {
+      return {
+        selectedContractorId: selectedData.selectedContractor,
+        totalValue: invoiceData.totalValue,
+        company: {
+          name: invoiceData.company[0].value,
+          address: invoiceData.company[1].value,
+          zipcode: invoiceData.company[2].value,
+          city: invoiceData.company[3].value,
+          email: invoiceData.company[4].value,
+          nip: invoiceData.company[5].value,
+          phoneNumber: invoiceData.company[6].value,
+          siteAddress: invoiceData.company[7].value,
+        },
+        contractor: {
+          name: invoiceData.contractor[0].value,
+          address: invoiceData.contractor[1].value,
+          zipcode: invoiceData.contractor[2].value,
+          city: invoiceData.contractor[3].value,
+          email: invoiceData.contractor[4].value,
+          nip: invoiceData.contractor[5].value,
+        },
+        invoiceSettings: {
+          dateOfIssue: invoiceData.invoiceSettings[0].value,
+          invoiceNumber: invoiceData.invoiceSettings[1].value,
+          invoiceYear: invoiceData.invoiceSettings[2].value,
+          placeOfIssue: invoiceData.invoiceSettings[3].value,
+        },
+        paymentSettings: {
+          daysOfPayment: invoiceData.paymentSettings[0].value,
+          accountNumber: invoiceData.paymentSettings[1].value,
+          bankName: invoiceData.paymentSettings[2].value,
+          dateOfPayment: useCreateCalendarFormatDate(dateOfPayment!),
+        },
+        items: [
+          ...invoiceData.items.map((el) => ({
+            name: el.item[0].value,
+            quantity: el.item[1].value,
+            price: el.item[2].value,
+            standard: el.standard,
+            totalPrice: el.totalPrice,
+          })),
+        ],
+      };
+    };
+
+    const checkIsContractorIsNew = (dataToSend: IInvoiceAddDataToSendAPI) => {
+      const selectedContractorData = selectedData.contractors.find((el) => el._id === selectedData.selectedContractor);
+      if (selectedContractorData) {
+        const cleanContractorData = {
+          name: selectedContractorData.name,
+          address: selectedContractorData.address,
+          zipcode: selectedContractorData.zipcode,
+          city: selectedContractorData.city,
+          email: selectedContractorData.email,
+          nip: selectedContractorData.nip,
+        };
+        return !isEqual(dataToSend.contractor, cleanContractorData);
+      }
+      return true;
+    };
+
+    try {
+      setLoaderText("SAVING");
+      setApiDataLoad(true);
+      const dataToSend = parseData();
+      if (checkIsContractorIsNew(dataToSend)) delete dataToSend.selectedContractorId;
+      // await addInvoiceAPI(dataToSend);
+      console.log(selectedData);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setApiDataLoad(false);
+    }
+    // TO DO if lastInvoiceNumber + 1 not equal to invoiceNumber not update
+
+    navigate("/contractorsAll");
   };
 
   const createSelectContractorData = useCallback(async () => {
@@ -310,7 +408,7 @@ export const InvoiceAdd = () => {
   const handleChangeSelectContractor = (e: React.FormEvent<HTMLSelectElement>) => {
     const targetValue = (e.target as HTMLSelectElement).value;
     const selectedContractorData: IContractorAPI = Object.assign({}, ...selectedData.contractors.filter((el) => el._id === targetValue));
-    setSelectedData((prevState) => ({ ...prevState, selectedContractor: selectedContractorData._id ?? "" }));
+    setSelectedData((prevState) => ({ ...prevState, selectedContractor: selectedContractorData._id! }));
 
     setInvoiceData((prevState) => ({
       ...prevState,
@@ -326,7 +424,7 @@ export const InvoiceAdd = () => {
 
         setInvoiceData((prevState) => ({
           ...prevState,
-          company: [...DEFAULT_COMPANY_OBJECT.map((el) => ({ ...el, value: companyDataFromAPI[el.name as keyof ICompanyAPI] ?? "" }))],
+          company: [...DEFAULT_COMPANY_OBJECT.map((el) => ({ ...el, value: companyDataFromAPI[el.name as keyof ICompanyAPI]! }))],
         }));
         setSubApiDataLoad(false);
       }
@@ -341,12 +439,15 @@ export const InvoiceAdd = () => {
         setSubApiDataLoad(true);
         const invoiceSettingsFromAPI = (await getInvoiceSettingsAPI()).data.site;
 
+        setSelectedData((prevState) => ({ ...prevState, lastInvoiceNumber: invoiceSettingsFromAPI.lastInvoiceNumber }));
+
         setInvoiceData((prevState) => ({
           ...prevState,
           invoiceSettings: [
             ...GLOBAL_OBJECT_INVOICE_SETTINGS.map((el) => {
               if (el.name === "dateOfIssue") return { ...el, value: useCreateCalendarFormatDate(new Date()) };
-              else if (el.name === "lastInvoiceNumber") return { ...el, value: invoiceSettingsFromAPI["lastInvoiceNumber"] + 1 };
+              else if (el.name === "lastInvoiceNumber") return { ...el, name: "invoiceNumber", value: invoiceSettingsFromAPI["lastInvoiceNumber"] + 1 };
+              else if (el.name === "lastInvoiceYear") return { ...el, name: "invoiceYear", value: invoiceSettingsFromAPI["lastInvoiceYear"] };
               return { ...el, value: invoiceSettingsFromAPI[el.name as keyof IInvoiceSettingsAPI] ?? "" };
             }),
           ],

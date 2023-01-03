@@ -76,4 +76,40 @@ declare global {
   export interface IInvoiceSettingsResponseAPI {
     site: IInvoiceSettingsAPI;
   }
+
+  export interface IInvoiceAddDataToSendAPI {
+    selectedContractorId?: string;
+    totalValue: number,
+    company: {
+      address: string;
+      city: string;
+      email: string;
+      name: string; 
+      nip: string;
+      phoneNumber: string;
+      siteAddress: string;
+      zipcode: string;
+    };
+    contractor: {
+      address: string;
+      city: string;
+      email: string;
+      name: string;
+      nip: string;
+      zipcode: string;
+    };
+    invoiceSettings: {
+      dateOfIssue: string;
+      invoiceNumber: string;
+      invoiceYear: string;
+      placeOfIssue: string;
+    };
+    items: { name: string; price: string; quantity: string; standard: string; totalPrice: number }[];
+    paymentSettings: {
+      accountNumber: string;
+      bankName: string;
+      dateOfPayment: string;
+      daysOfPayment: string;
+    };
+  }
 }
