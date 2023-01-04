@@ -24,3 +24,8 @@ export const INVOICE_ADD_LABELS = {
 export const INVOICE_ADD_BUTTON_ADD_ITEM_LABELS = {
   ADD: "Dodaj",
 };
+
+export const SAME_INVOICE_NUMBER_LABELS = {
+  TITLE: "Faktura istnieje w bazie danych",
+  TEXT: "W bazie danych istnieje już faktura o podanym numerze, czy na pewno chcesz kontynuować?"
+}
