@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect, useCallback } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { Header } from "../../../Components/Header/Header";
 import { Loader } from "../../../Components/Loader/Loader";
@@ -66,6 +66,8 @@ export const InvoiceAdd = () => {
   const [invoiceData, setInvoiceData] = useState<IInvoiceAdd>(DEFAUL_INVOICE_DATA);
   const [selectedData, setSelectedData] = useState<IInvoiceAddSettings>(DEFAULT_SETTINGS);
   const [loaderText, setLoaderText] = useState<TLoaderType>("LOADING_DATA");
+
+  const { id: idFromURL } = useParams();
 
   const navigate = useNavigate();
 
@@ -410,7 +412,7 @@ export const InvoiceAdd = () => {
   const createSelectContractorData = useCallback(async () => {
     try {
       setSubApiDataLoad(true);
-
+      let contractorFromIdURL: IContractorAPI | undefined;
       if (!selectedData.contractors.length) {
         const contractorsDataFromApi = (await getAllContractorsAPI("createdAt", "desc", 0)).data;
         const dataForSelectContractor: ISelect = {
@@ -418,20 +420,32 @@ export const InvoiceAdd = () => {
           values: [...contractorsDataFromApi.map((el: IContractorAPI) => ({ value: el._id, label: el.name }))],
         };
 
+        if (idFromURL) {
+          contractorFromIdURL = contractorsDataFromApi.find((el) => el._id === idFromURL);
+        }
+
         setSelectedData((prevState) => ({
           ...prevState,
           dataForSelectContractor: { ...dataForSelectContractor },
           contractors: [...contractorsDataFromApi],
+          selectedContractor: contractorFromIdURL?._id ?? "",
         }));
       }
 
-      setInvoiceData((prevState) => ({ ...prevState, contractor: [...(!prevState.contractor.length ? DEFAULT_CONTRACTOR_OBJECT : prevState.contractor)] }));
+      setInvoiceData((prevState) => ({
+        ...prevState,
+        contractor: [
+          ...(!prevState.contractor.length
+            ? DEFAULT_CONTRACTOR_OBJECT.map((el) => ({ ...el, value: contractorFromIdURL?.[el.name as keyof IContractorAPI] ?? "" }))
+            : prevState.contractor),
+        ],
+      }));
 
       setSubApiDataLoad(false);
     } catch (error) {
       console.error(error);
     }
-  }, [selectedData]);
+  }, [selectedData, idFromURL]);
 
   const handleChangeSelectContractor = (e: React.FormEvent<HTMLSelectElement>) => {
     const targetValue = (e.target as HTMLSelectElement).value;

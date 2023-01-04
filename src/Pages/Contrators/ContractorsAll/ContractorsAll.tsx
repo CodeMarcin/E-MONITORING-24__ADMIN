@@ -33,7 +33,7 @@ export const ContractorsAll = () => {
         return contractorsDataFromAPI.data.map((el: IContractorAPI, index: number): IAccordionProps => {
           const leftSection = { leftContent: [el.address, `${el.zipcode} ${el.city}`, el.email], NIP: el.nip };
           const bottomMenu: IAccordionPropsBottomMenu[] = [
-            { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_ADD_INVOICE, action: "wp.pl" },
+            { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_ADD_INVOICE, action: `/invoiceAdd/${el._id}` },
             { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_EDIT, action: `/contractorEdit/${el._id}` },
             { label: CONTRATORS_ALL_LABELS.BOTTOM_ACCORDION_MENU_INVOICES, action: "wp.pl" },
             {
