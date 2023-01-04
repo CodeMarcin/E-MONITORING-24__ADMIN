@@ -29,7 +29,11 @@ const router = createBrowserRouter([
       },
       {
         path: "/invoiceAdd",
-        element: <InvoiceAdd />
+        element: <InvoiceAdd />,
+      },
+      {
+        path: "/invoiceAdd/:id",
+        element: <InvoiceAdd />,
       },
       {
         path: "/settings",
