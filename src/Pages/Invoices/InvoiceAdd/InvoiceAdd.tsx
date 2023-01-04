@@ -311,9 +311,9 @@ export const InvoiceAdd = () => {
     if (!subApiDataLoad) {
       if (step === 1) return [buttonNext];
       else if (step >= 2 && step <= 5) return [buttonPrevious, buttonNext];
-      else if (step === 6) return [buttonPrevious, buttonSave];
-      return [];
-    } else return [];
+      return [buttonPrevious, buttonSave];
+    }
+    return [];
   };
 
   const addItem = () => {
@@ -361,10 +361,10 @@ export const InvoiceAdd = () => {
           placeOfIssue: invoiceData.invoiceSettings[3].value,
         },
         paymentSettings: {
-          daysOfPayment: invoiceData.paymentSettings[0].value,
-          accountNumber: invoiceData.paymentSettings[1].value,
-          bankName: invoiceData.paymentSettings[2].value,
-          dateOfPayment: useCreateCalendarFormatDate(dateOfPayment!),
+          daysOfPayment: invoiceData.paymentSettings[0]?.value ?? "",
+          accountNumber: invoiceData.paymentSettings[1]?.value ?? "",
+          bankName: invoiceData.paymentSettings[2]?.value ?? "",
+          dateOfPayment: useCreateCalendarFormatDate(dateOfPayment!) ?? "",
         },
         items: [
           ...invoiceData.items.map((el) => ({
