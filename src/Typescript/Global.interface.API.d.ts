@@ -77,14 +77,19 @@ declare global {
     site: IInvoiceSettingsAPI;
   }
 
+  export interface IInvoiceFindInvoiceByInvoiceNumberAndInvoiceYearAPI {
+    data: boolean;
+  }
+
   export interface IInvoiceAddDataToSendAPI {
     selectedContractorId?: string;
-    totalValue: number,
+    totalValue: number;
+    increasLastInvoiceNumber: boolean;
     company: {
       address: string;
       city: string;
       email: string;
-      name: string; 
+      name: string;
       nip: string;
       phoneNumber: string;
       siteAddress: string;

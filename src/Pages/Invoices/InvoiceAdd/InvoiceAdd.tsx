@@ -7,6 +7,8 @@ import { Loader } from "../../../Components/Loader/Loader";
 import { Button } from "../../../Components/Button/Button";
 import { BottomPanel } from "../../../Components/BottomPanel/BottomPanel";
 
+import { PopupModal } from "../../../Components/PopupModal/PopupModal";
+
 import { SelectContractor } from "../../../Components/Panels/SelectContractor";
 import { CompanySettings } from "../../../Components/Panels/CompanySettings";
 import { InvoiceSettings } from "../../../Components/Panels/InvoiceSettings";
@@ -25,11 +27,12 @@ import { useCreateTotalValue } from "../../../Hooks/useCreateTotalValue";
 
 import { getAllContractorsAPI } from "../../../Api/Contractors";
 import { getCompanyAPI, getInvoiceSettingsAPI, getPaymentSettingsAPI } from "../../../Api/Company";
+import { findInvoiceByInvoiceNumberAndInvoiceYear } from "../../../Api/Invoices";
 import { addInvoiceAPI } from "../../../Api/Invoices";
 
 import { cloneDeep, isEqual } from "lodash";
 
-import { HEADER_INVOICE_ADD_PROPS, DEFAUL_INVOICE_DATA, DEFAULT_SETTINGS } from "./Objects";
+import { HEADER_INVOICE_ADD_PROPS, DEFAUL_INVOICE_DATA, DEFAULT_SETTINGS, DEFAUL_SAME_INVOICE_NUMBER_MODAL } from "./Objects";
 import {
   GLOBAL_OBJECT_CONTRACTOR,
   GLOBAL_OBJECT_COMPANY,
@@ -56,8 +59,9 @@ type stateSubName = "contractor" | "company" | "invoiceSettings" | "paymentSetti
 
 export const InvoiceAdd = () => {
   const [step, setStep] = useState<number>(1);
-  const [apiDataLoad, setApiDataLoad] = useState(false);
-  const [subApiDataLoad, setSubApiDataLoad] = useState(false);
+  const [apiDataLoad, setApiDataLoad] = useState<boolean>(false);
+  const [subApiDataLoad, setSubApiDataLoad] = useState<boolean>(false);
+  const [modalData, setModalData] = useState<IPopupModalProps>(DEFAUL_SAME_INVOICE_NUMBER_MODAL);
   const [dateOfPayment, setDateOfPayment] = useState<Date>();
   const [invoiceData, setInvoiceData] = useState<IInvoiceAdd>(DEFAUL_INVOICE_DATA);
   const [selectedData, setSelectedData] = useState<IInvoiceAddSettings>(DEFAULT_SETTINGS);
@@ -140,7 +144,7 @@ export const InvoiceAdd = () => {
       .forEach((el) => {
         if (el.totalPrice) totalValue += el.totalPrice;
       });
-    // TO DO prevent to display NaN if input is string
+
     const secondValue =
       targetName === "quantity"
         ? invoiceData.items[index].item.find((el) => el.name === "price")!.value ?? 0
@@ -180,7 +184,32 @@ export const InvoiceAdd = () => {
           }));
 
           const checkResult = !valuesAfterCheck.filter((el) => el.errorList).some((el) => !!el.errorList?.length);
+          if (
+            stateSubName === "invoiceSettings" &&
+            (await findInvoiceByInvoiceNumberAndInvoiceYear(invoiceData.invoiceSettings[1].value, invoiceData.invoiceSettings[2].value)).data
+          ) {
+            const closeModal = () => {
+              setModalData((prevState) => ({ ...prevState, show: false }));
+            };
 
+            const modalButtons: IButtonProps[] = [
+              { type: "SECOND", width: "FLEX", value: INVOICE_ADD_LABELS.BACK, callbacks: { onClickCallback: closeModal } },
+              {
+                type: "BASIC",
+                width: "FLEX",
+                value: INVOICE_ADD_LABELS.NEXT,
+                callbacks: {
+                  onClickCallback: () => {
+                    closeModal();
+                    setStep((prevState) => prevState + 1);
+                  },
+                },
+              },
+            ];
+
+            setModalData((prevState) => ({ ...prevState, show: true, buttons: modalButtons, toggleModalCallback: closeModal }));
+            return false;
+          }
           return checkResult;
         }
       } else if (stateSubName === "items") {
@@ -304,6 +333,7 @@ export const InvoiceAdd = () => {
       return {
         selectedContractorId: selectedData.selectedContractor,
         totalValue: invoiceData.totalValue,
+        increasLastInvoiceNumber: selectedData.lastInvoiceNumber + 1 === invoiceData.invoiceSettings[1].value ? true : false,
         company: {
           name: invoiceData.company[0].value,
           address: invoiceData.company[1].value,
@@ -367,14 +397,12 @@ export const InvoiceAdd = () => {
       setApiDataLoad(true);
       const dataToSend = parseData();
       if (checkIsContractorIsNew(dataToSend)) delete dataToSend.selectedContractorId;
-      // await addInvoiceAPI(dataToSend);
-      console.log(selectedData);
+      await addInvoiceAPI(dataToSend);
     } catch (error) {
       console.error(error);
     } finally {
       setApiDataLoad(false);
     }
-    // TO DO if lastInvoiceNumber + 1 not equal to invoiceNumber not update
 
     navigate("/contractorsAll");
   };
@@ -503,7 +531,7 @@ export const InvoiceAdd = () => {
           ? [
               ...GLOBAL_OBJECT_PAYMENT_SETTINGS.map((el) => {
                 if (el.name === "daysOfPayment") return { ...el, value: "14" };
-                return { ...el, value: selectedData.paymentSettings[el.name as keyof IPaymentAPI] ?? "" };
+                return { ...el, value: selectedData.paymentSettings[el.name as keyof IPaymentAPI]! };
               }),
             ]
           : [],
@@ -556,6 +584,7 @@ export const InvoiceAdd = () => {
   return (
     <>
       {apiDataLoad && <Loader type={loaderText} />}
+      {modalData.show && <PopupModal items={modalData} />}
       <BottomPanel buttons={getBottomPanelButtons()} />
       <div className={useStyles("container--full-width", styles["invoice-add"])}>
         <Header items={HEADER_INVOICE_ADD_PROPS} />

@@ -133,6 +133,7 @@ declare global {
     dataForSelectItems :ISelect;
     selectedContractor: string;
     selectedPaymentMethod: string;
+    lastInvoiceNumber: string;
   }
   
   export interface IInvoiceAdd {

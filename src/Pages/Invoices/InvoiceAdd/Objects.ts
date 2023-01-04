@@ -1,4 +1,4 @@
-import { INVOICE_ADD_HEADER_LABELS } from "./InvoiceAdd.labels";
+import { INVOICE_ADD_HEADER_LABELS, SAME_INVOICE_NUMBER_LABELS } from "./InvoiceAdd.labels";
 
 export const HEADER_INVOICE_ADD_PROPS: IHeaderProps = {
   title: INVOICE_ADD_HEADER_LABELS.HEADER_TITLE,
@@ -13,6 +13,7 @@ export const DEFAULT_SETTINGS: IInvoiceAddSettings = {
   dataForSelectItems: { name: "", values: [] },
   selectedContractor: "",
   selectedPaymentMethod: "transfer",
+  lastInvoiceNumber: "",
 };
 
 export const DEFAULT_ITEM_DATA: IItem = {
@@ -28,4 +29,12 @@ export const DEFAUL_INVOICE_DATA: IInvoiceAdd = {
   paymentSettings: [],
   items: [],
   totalValue: 1,
+};
+
+export const DEFAUL_SAME_INVOICE_NUMBER_MODAL: IPopupModalProps = {
+  buttons: [],
+  show: false,
+  title: SAME_INVOICE_NUMBER_LABELS.TITLE,
+  text: SAME_INVOICE_NUMBER_LABELS.TEXT,
+  toggleModalCallback: () => {},
 };
