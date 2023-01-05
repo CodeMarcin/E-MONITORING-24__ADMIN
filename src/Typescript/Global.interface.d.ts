@@ -42,6 +42,7 @@ declare global {
     text?: string;
     buttons: IButtonProps[];
     checkbox?: IInputProps;
+    handleCheckBoxCallback?: () => void;
     toggleModalCallback: () => void;
   }
 

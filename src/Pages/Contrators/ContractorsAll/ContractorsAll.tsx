@@ -8,7 +8,7 @@ import { Loader } from "../../../Components/Loader/Loader";
 
 import { useStyles } from "../../../Hooks/useStyles";
 
-import { getAllContractorsAPI, delteContractorByIDAPI } from "../../../Api/Contractors";
+import { getAllContractorsAPI, deleteContractorByIDAPI } from "../../../Api/Contractors";
 
 import { SORT_SETTINGS, HEADER_PROPS } from "./Objects";
 
@@ -52,23 +52,33 @@ export const ContractorsAll = () => {
       });
 
       setDeleteConfirmModal(() => {
-        return contractorsDataFromAPI.data.map((el: IContractorAPI): IPopupModalProps => {
+        return contractorsDataFromAPI.data.map((el: IContractorAPI, index: number): IPopupModalProps => {
           const modalButtons: IButtonProps[] = [
             { type: "SECOND", width: "FLEX", value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CANCEL, callbacks: { onClickCallback: closeDeleteModal } },
             {
               type: "BASIC",
               width: "FLEX",
               value: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_BUTTON_CONFIRM,
-              callbacks: { onClickCallback: () => el._id && deleteContratorByIDAPI(el._id) },
+              callbacks: { onClickCallback: () => el._id && deleteContratorByID(el._id, index) },
             },
           ];
           const checkBox: IInputProps = {
-            name: "delete-invoices",
+            name: `delete-invoices-${index}`,
             label: CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_DELETE_ALL_INVOICES_TEXT,
             showName: false,
             type: "checkbox",
             value: "true",
           };
+
+          const handleCheckBox = (index: number) => {
+            setDeleteConfirmModal((prevState) =>
+              prevState.map((el, idx) => {
+                if (idx === index) return { ...el, checkbox: { ...prevState[idx].checkbox!, value: prevState[idx].checkbox!.value === "true" ? "false" : "true" } };
+                return { ...el };
+              })
+            );
+          };
+
           return {
             show: false,
             title: `${CONTRATORS_ALL_LABELS.CONFIRM_DELETE_MODAL_TITLE} ${el.name}?`,
@@ -76,6 +86,7 @@ export const ContractorsAll = () => {
             checkbox: checkBox,
             buttons: modalButtons,
             toggleModalCallback: closeDeleteModal,
+            handleCheckBoxCallback: () => handleCheckBox(index),
           };
         });
       });
@@ -84,7 +95,21 @@ export const ContractorsAll = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [sort]);
+  }, []);
+
+  const deleteContratorByID = async (id: string, index: number) => {
+    try {
+      const deleteAllInvoices: HTMLInputElement = document.querySelector(`input[name="delete-invoices-${index}"]`)!
+      closeDeleteModal();
+      setLoaderText("DELETING");
+      setApiDataLoad(true);
+      await deleteContractorByIDAPI(id, deleteAllInvoices.checked);
+      setLoaderText("LOADING_DATA");
+      await getContractorsFromAPI();
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const closeDeleteModal = () => {
     setDeleteConfirmModal((prevState) =>
@@ -92,19 +117,6 @@ export const ContractorsAll = () => {
         return { ...el, show: false };
       })
     );
-  };
-
-  const deleteContratorByIDAPI = async (id: string) => {
-    try {
-      closeDeleteModal();
-      setLoaderText("DELETING");
-      setApiDataLoad(true);
-      await delteContractorByIDAPI(id);
-      setLoaderText("LOADING_DATA");
-      await getContractorsFromAPI();
-    } catch (error) {
-      console.error(error);
-    }
   };
 
   useEffect(() => {

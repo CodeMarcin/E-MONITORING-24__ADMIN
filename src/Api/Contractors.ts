@@ -20,6 +20,6 @@ export const editContractorByIDAPI = (contractor: IContractorAPI) => {
   return http.put("/contractors/editContractorByID", contractor);
 };
 
-export const delteContractorByIDAPI = (id: string) => {
-  return http.delete(`/contractors/delteContractorByID/${id}`);
+export const deleteContractorByIDAPI = (id: string, deleteAllInvoices: boolean) => {
+  return http.delete(`/contractors/delteContractorByID/${id}/${deleteAllInvoices}`);
 };

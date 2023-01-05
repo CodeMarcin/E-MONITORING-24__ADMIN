@@ -8,7 +8,7 @@ import styles from "./PopupModal.module.css";
 
 export const PopupModal = (props: { items: IPopupModalProps }) => {
   const { items } = props;
-  const { title, buttons, icon, text, toggleModalCallback } = items;
+  const { title, buttons, icon, text, handleCheckBoxCallback, toggleModalCallback } = items;
 
   const getIcon = (): JSX.Element | boolean => {
     if (!icon) return false;
@@ -32,7 +32,16 @@ export const PopupModal = (props: { items: IPopupModalProps }) => {
             {icon && <div className={styles["popup__icon"]}>{getIcon()}</div>}
             <div className={styles["popup__title"]}>{title}</div>
             {text && <div className={styles["popup__text"]}>{text}</div>}
-            {items.checkbox && <Input items={items.checkbox} callbacks={{ onChangeCallback: () => {} }} />}
+            {items.checkbox && (
+              <Input
+                items={items.checkbox}
+                callbacks={{
+                  onChangeCallback: () => {
+                    handleCheckBoxCallback && handleCheckBoxCallback();
+                  },
+                }}
+              />
+            )}
             {buttons?.length !== 0 && (
               <div className={styles["popup__buttons"]}>
                 {buttons.map((el) => (
